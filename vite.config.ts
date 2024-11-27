@@ -7,4 +7,7 @@ export default defineConfig({
   server: {
     port: 4000,
   },
+  optimizeDeps: {
+    include: ['use-debounce'],
+  },
 })

@@ -26,7 +26,7 @@ instance.interceptors.response.use(response => {
 }, async error => {
     NProgress.done();
     const { config, response } = error;
-    if (response?.status === 401 && !config.headers['x-no-retry'] && window.location.pathname !== '/login') {
+    if (response?.status === 401 && !config.headers['x-no-retry'] && !["/login", "/register"].includes(window.location.pathname)) {
         const res: ResponseType = await refreshTokenAPI();
         if (res && res.data) {
             window.localStorage.setItem('accessToken', res.data.accessToken);

@@ -20,6 +20,7 @@ import {
   MenuList,
   useToast,
   Image,
+  Avatar,
 } from '@chakra-ui/react'
 import {FiHome, FiMenu, FiChevronDown, FiUsers,} from 'react-icons/fi'
 import { IconType } from 'react-icons'
@@ -77,8 +78,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           src={logo}
           alt={'Logo'}
         />
-        <Text fontSize="xl" fontWeight="bold">
-          Music App
+        <Text fontSize="lg" fontWeight="bold">
+          Library App
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
@@ -178,15 +179,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           <Menu>
             <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
               <HStack>
+                <Avatar size={'sm'}/>
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2">
                   <Text fontSize="sm">{user.name}</Text>
-                  <Text fontSize="xs" color="gray.600">
-                    Admin
-                  </Text>
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
                   <FiChevronDown />

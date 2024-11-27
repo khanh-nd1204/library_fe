@@ -31,11 +31,12 @@ function App() {
         console.error(res.message);
       }
     };
-    if (!["/login", "/register"].includes(window.location.pathname)) {
-      fetchAccount();
-    } else {
-      setLoading(false);
-    }
+    fetchAccount();
+    // if (!["/login", "/register"].includes(window.location.pathname)) {
+    //   fetchAccount();
+    // } else {
+    //   setLoading(false);
+    // }
   }, []);
 
   const router = createBrowserRouter([
@@ -56,8 +57,8 @@ function App() {
         {path: "user", element: <UserPage />},
       ],
     },
-    {path: "/login", element: <LoginPage />},
-    {path: "/register", element: <RegisterPage />},
+    {path: "/login", element: user.id ? <Navigate to="/" replace /> : <LoginPage />},
+    {path: "/register", element: user.id ? <Navigate to="/" replace /> : <RegisterPage />},
   ]);
 
   return (

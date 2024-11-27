@@ -128,7 +128,6 @@ const ResetPassword = (props: Props) => {
                     </Field>
                     <FormErrorMessage>{errors.password}</FormErrorMessage>
                   </FormControl>
-
                   <Button
                     colorScheme={'blue'}
                     variant={'solid'}

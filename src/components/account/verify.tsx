@@ -28,12 +28,15 @@ const VerifyEmail = (props: Props) => {
   const [error, setError] = useState();
   const toast = useToast();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleVerify = async () => {
     try {
       await validationSchema.validate(otp);
       setError(undefined);
+      setLoading(true);
       const res: ResponseType = await activateUserAPI({email, otp: parseInt(otp)});
+      setLoading(false);
       if (res && !res.error) {
         toast({
           description: res.message,
@@ -94,6 +97,7 @@ const VerifyEmail = (props: Props) => {
           </FormControl>
           <Stack spacing={6}>
             <Button
+              isLoading={loading}
               colorScheme={'blue'}
               variant={'solid'}
               onClick={handleVerify}

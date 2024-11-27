@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "1.9.3",
     "axios": "1.7.2",
     "axios-retry": "4.5.0",
+    "chakra-pagination": "^1.0.3",
     "formik": "2.4.6",
     "framer-motion": "11.11.10",
     "nprogress": "0.2.0",
@@ -26,6 +27,7 @@
     "react-redux": "8.0.5",
     "react-router-dom": "6.23.1",
     "redux-persist": "6.0.0",
+    "use-debounce": "^10.0.4",
     "uuid": "10.0.0",
     "xlsx": "0.18.5",
     "yup": "1.4.0"
