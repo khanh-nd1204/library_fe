@@ -7,34 +7,45 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   useToast,
   Badge,
   Button,
-  Input, Flex, IconButton, Tooltip, HStack
+  Input,
+  Flex,
+  IconButton,
+  HStack,
+  Select,
+  Skeleton, useDisclosure, Tooltip
 } from '@chakra-ui/react'
 import {ResponseType} from "../../types/response.type.ts";
 import {UserType} from "../../types/user.type.ts";
-import {ChevronDownIcon, ChevronUpIcon, ViewIcon, EditIcon, DeleteIcon} from "@chakra-ui/icons";
+import {AddIcon, ChevronDownIcon, ChevronUpIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons";
 import { useDebouncedCallback } from 'use-debounce';
 import { Pagination } from 'chakra-pagination/src/components';
+import UpdateUser from "../../components/user/update.tsx";
+import DeleteUser from "../../components/user/delete.tsx";
+import CreateUser from "../../components/user/create.tsx";
 
 const UserPage = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
-  const [total, setTotal] = useState();
+  const [total, setTotal] = useState(0);
   const [sort, setSort] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const columns = ['name', 'email', 'phone', 'address'];
   const [filter, setFilter] = useState('');
+  const [dataSelected, setDataSelected] = useState<UserType>({});
+  const update = useDisclosure();
+  const create = useDisclosure();
+  const remove = useDisclosure();
 
   useEffect(() => {
     getUserList();
-  }, [sort, sortDirection, filter]);
+  }, [sort, sortDirection, filter, page, size]);
 
   const getUserList = async () => {
     const filterStr = 'filter=' + columns.map((column) => `${column}~'${filter}'`).join(' or ');
@@ -53,11 +64,9 @@ const UserPage = () => {
         title: res.error,
         description: Array.isArray(res.message) ? res.message[0] : res.message,
         status: 'error',
-        duration: 2000,
       })
     }
   }
-
 
   const handleSort = (sort: string) => {
     setSort(sort);
@@ -75,14 +84,22 @@ const UserPage = () => {
     1000
   );
 
+
+
   return (
     <>
-      <Input placeholder='Search input' maxW={300} mb={4} onChange={(e) => debounced(e.target.value)}/>
+      <Flex justify='space-between' mb={4} direction={{ base: 'column', md: 'row' }} gap={4}>
+        <Input placeholder='Search input' maxW={{ base: 'full', md: '300' }} colorScheme='teal' focusBorderColor='teal.600'
+               onChange={(e) => debounced(e.target.value)}
+        />
+        <Button colorScheme='teal' maxW={'max-content'} ml={'auto'} variant={'solid'} rightIcon={<AddIcon />} onClick={create.onOpen}>
+          Create
+        </Button>
+      </Flex>
       <TableContainer>
         <Table variant='simple'>
-          <TableCaption>User List</TableCaption>
           <Thead>
-            <Tr >
+            <Tr>
               {columns.map(item => {
                 return <Th key={item}>
                     <Button
@@ -138,35 +155,41 @@ const UserPage = () => {
             {data.map((item: UserType) => {
                 return (
                   <Tr key={item.id}>
-                    <Td>{item.name}</Td>
-                    <Td>{item.email}</Td>
-                    <Td>{item.phone}</Td>
-                    <Td>{item.address}</Td>
-                    <Td>{item.role}</Td>
-                    <Td>{item.active ? <Badge colorScheme='green'>Active</Badge> : <Badge colorScheme='red'>Inactive</Badge>}</Td>
+                    <Td><Skeleton isLoaded={!loading}>{item.name}</Skeleton></Td>
+                    <Td><Skeleton isLoaded={!loading}>{item.email}</Skeleton></Td>
+                    <Td><Skeleton isLoaded={!loading}>{item.phone}</Skeleton></Td>
+                    <Td><Skeleton isLoaded={!loading}>{item.address}</Skeleton></Td>
+                    <Td><Skeleton isLoaded={!loading}>{item.role}</Skeleton></Td>
                     <Td>
-                      <HStack>
-                        <Tooltip label='View detail'>
-                          <IconButton
-                            aria-label='View'
-                            icon={<ViewIcon />}
-                          />
-                        </Tooltip>
-
-                        <Tooltip label='Edit'>
-                          <IconButton
-                            aria-label='Edit'
-                            icon={<EditIcon />}
-                          />
-                        </Tooltip>
-
-                        <Tooltip label='Delete'>
-                          <IconButton
-                            aria-label='Delete'
-                            icon={<DeleteIcon />}
-                          />
-                        </Tooltip>
-                      </HStack>
+                      <Skeleton isLoaded={!loading}>
+                        {item.active ? <Badge colorScheme='green'>Active</Badge> : <Badge colorScheme='red'>Inactive</Badge>}
+                      </Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton isLoaded={!loading}>
+                        <HStack>
+                          <Tooltip label='Edit'>
+                            <IconButton
+                              aria-label='Edit'
+                              icon={<EditIcon />}
+                              onClick={() => {
+                                update.onOpen();
+                                setDataSelected(item);
+                              }}
+                            />
+                          </Tooltip>
+                          <Tooltip label='Delete'>
+                            <IconButton
+                              aria-label='Delete'
+                              icon={<DeleteIcon />}
+                              onClick={() => {
+                                remove.onOpen();
+                                setDataSelected(item);
+                              }}
+                            />
+                          </Tooltip>
+                        </HStack>
+                      </Skeleton>
                     </Td>
                   </Tr>
                 );
@@ -175,15 +198,29 @@ const UserPage = () => {
           </Tbody>
         </Table>
       </TableContainer>
-      <Flex justify='right'>
+      <Flex justify='space-between' mt={4}>
+        <Select
+          maxW={20}
+          cursor='pointer'
+          focusBorderColor="teal.600"
+          value={size}
+          onChange={(e) => setSize(parseInt(e.target.value, 10))}
+        >
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </Select>
         <Pagination
           currentPage={page}
           onPageChange={setPage}
           total={total}
-          colorScheme={'blue'}
-          perPage={10}
+          colorScheme={'teal'}
         />
       </Flex>
+
+      <CreateUser isOpen={create.isOpen} onClose={create.onClose} getUserList={getUserList} />
+      <UpdateUser isOpen={update.isOpen} onClose={update.onClose} dataSelected={dataSelected} getUserList={getUserList}/>
+      <DeleteUser isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected} getUserList={getUserList}  />
     </>
   )
 }

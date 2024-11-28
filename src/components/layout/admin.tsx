@@ -84,7 +84,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem selected={location.pathname} href={link.href} key={link.name} icon={link.icon} onClick={() => navigate(link.href)}>
+        <NavItem selected={location.pathname} href={link.href} key={link.name} icon={link.icon} onClick={() => {
+          navigate(link.href);
+          onClose();
+        }}>
           {link.name}
         </NavItem>
       ))}
@@ -101,10 +104,10 @@ const NavItem = ({ selected, href, icon, children, ...rest }: NavItemProps) => {
       borderRadius="lg"
       role="group"
       cursor="pointer"
-      bgColor={selected === href ? 'blue.400' : 'none'}
+      bgColor={selected === href ? 'teal' : 'none'}
       color={selected === href ? 'white' : 'none'}
       _hover={{
-        bg: 'blue.400',
+        bg: 'teal.600',
         color: 'white',
       }}
       {...rest}>
@@ -143,7 +146,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         title: res.error,
         description: Array.isArray(res.message) ? res.message[0] : res.message,
         status: 'error',
-        duration: 2000,
       })
     }
   }
@@ -186,6 +188,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   spacing="1px"
                   ml="2">
                   <Text fontSize="sm">{user.name}</Text>
+                  <Text fontSize="xs" color="gray.600">{user.role}</Text>
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
                   <FiChevronDown />
@@ -219,7 +222,8 @@ const AdminLayout = (props: PropsWithChildren) => {
           onClose={onClose}
           returnFocusOnClose={false}
           onOverlayClick={onClose}
-          size="full">
+          size="full"
+        >
           <DrawerContent>
             <SidebarContent onClose={onClose} />
           </DrawerContent>

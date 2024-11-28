@@ -5,10 +5,12 @@ export type UserType = {
   password?: string,
   role?: string,
   otp?: number,
-  id?: string,
+  id: number,
   address?: string,
   phone?: string,
   currentPassword?: string,
   newPassword?: string,
   active?: boolean,
+  createdAt?: string,
+  updatedAt?: string,
 }

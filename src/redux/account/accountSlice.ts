@@ -26,7 +26,6 @@ export const accountSlice = createSlice({
         },
         doUpdateAccountAction: (state, action) => {
             state.user.name = action.payload.name;
-            state.user.avatar = action.payload.avatar;
             localStorage.removeItem("accessToken");
         },
     },

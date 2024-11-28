@@ -62,7 +62,6 @@ const LoginPage = () => {
         title: res.error,
         description: Array.isArray(res.message) ? res.message[0] : res.message,
         status: 'error',
-        duration: 2000,
       })
       if (res.statusCode === 401) reactivateAccount();
     }
@@ -133,12 +132,12 @@ const LoginPage = () => {
                   </Stack>
 
                   <Stack spacing={4} mt={4}>
-                    <Button colorScheme={'blue'} fontWeight={'normal'} variant={'link'} ml={'auto'}
+                    <Button colorScheme={'teal'} fontWeight={'normal'} variant={'link'} ml={'auto'}
                             onClick={resetPassword}>
                       Forgot password?
                     </Button>
                     <Button
-                      colorScheme={'blue'}
+                      colorScheme={'teal'}
                       variant={'solid'}
                       type="submit"
                       isLoading={isSubmitting}
@@ -149,7 +148,7 @@ const LoginPage = () => {
 
                   <Stack mt={4}>
                     <Text align={'center'}>
-                      Don't have an account? <Link color={'blue.400'} href={'/register'}>Register</Link>
+                      Don't have an account? <Link color={'teal.400'} href={'/register'}>Register</Link>
                     </Text>
                   </Stack>
                 </Form>

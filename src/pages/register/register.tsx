@@ -127,7 +127,7 @@ const RegisterPage = () => {
                     </FormControl>
                   </Stack>
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'teal'}
                     variant={'solid'}
                     type="submit"
                     isLoading={isSubmitting}
@@ -138,7 +138,7 @@ const RegisterPage = () => {
                   </Button>
                   <Stack pt={6}>
                     <Text align={'center'}>
-                      Already a user? <Link color={'blue.400'} href={'/login'}>Login</Link>
+                      Already a user? <Link color={'teal.400'} href={'/login'}>Login</Link>
                     </Text>
                   </Stack>
                 </Form>

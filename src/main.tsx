@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ChakraProvider
-          toastOptions={{defaultOptions: { position: 'top-right', duration: 3000, isClosable: true } }}
+          toastOptions={{defaultOptions: { position: 'bottom-right', duration: 3000, isClosable: true } }}
         >
           <App />
         </ChakraProvider>
