@@ -2,10 +2,10 @@ import {createBrowserRouter, Navigate, Outlet, RouterProvider} from "react-route
 import LoginPage from "./pages/login/login.tsx";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import { doGetAccountAction } from "./redux/account/accountSlice.ts";
-import { getAccountAPI } from "./services/auth.service.ts";
-import { Center, Spinner } from "@chakra-ui/react";
-import { ResponseType } from "./types/response.type.ts";
+import {doGetAccountAction} from "./redux/account/accountSlice.ts";
+import {getAccountAPI} from "./services/auth.service.ts";
+import {Center, Spinner} from "@chakra-ui/react";
+import {ResponseType} from "./types/response.type.ts";
 import DashboardPage from "./pages/admin/dashboard.tsx";
 import UserPage from "./pages/admin/user.tsx";
 import ErrorPage from "./pages/error/error.tsx";
@@ -43,22 +43,23 @@ function App() {
     {
       path: "/",
       element: <ClientLayout children={<Outlet/>}/>,
-      errorElement: <ErrorPage />,
+      errorElement: <ErrorPage/>,
       children: [
-        {index: true, element: <HomePage />},
+        {index: true, element: <HomePage/>},
       ],
     },
     {
       path: "/admin",
-      element: !user.id ? <Navigate to="/login" replace /> : user.role !== "ADMIN" ? <ErrorPage/> : <AdminLayout children={<Outlet/>}/>,
-      errorElement: <ErrorPage />,
+      element: !user.id ? <Navigate to="/login" replace/> : user.role !== "ADMIN" ? <ErrorPage/> :
+        <AdminLayout children={<Outlet/>}/>,
+      errorElement: <ErrorPage/>,
       children: [
-        {index: true, element: <DashboardPage />},
-        {path: "user", element: <UserPage />},
+        {index: true, element: <DashboardPage/>},
+        {path: "user", element: <UserPage/>},
       ],
     },
-    {path: "/login", element: user.id ? <Navigate to="/" replace /> : <LoginPage />},
-    {path: "/register", element: user.id ? <Navigate to="/" replace /> : <RegisterPage />},
+    {path: "/login", element: user.id ? <Navigate to="/" replace/> : <LoginPage/>},
+    {path: "/register", element: user.id ? <Navigate to="/" replace/> : <RegisterPage/>},
   ]);
 
   return (
@@ -74,7 +75,7 @@ function App() {
           />
         </Center>
       ) : (
-        <RouterProvider router={router} />
+        <RouterProvider router={router}/>
       )}
     </>
   );

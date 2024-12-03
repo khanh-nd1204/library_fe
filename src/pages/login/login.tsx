@@ -35,17 +35,17 @@ interface FormValues {
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required('Email is required!').email('Invalid email!'),
-  password: Yup.string().required('Password is required!').min(6, 'Password must be at least 6 characters!').max(50, 'Name must be less than 50 characters'),
+  password: Yup.string().required('Password is required!').min(6, 'Password must be at least 6 characters!').max(50, 'Password must be less than 50 characters'),
 })
 
 const LoginPage = () => {
-  const initialValues: FormValues = { username: '', password: '' };
+  const initialValues: FormValues = {username: '', password: ''};
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [type, setType] = useState('');
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
 
   const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
     const res: ResponseType = await loginUserAPI(values);
@@ -79,14 +79,14 @@ const LoginPage = () => {
 
   return (
     <>
-      <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+      <Stack minH={'100vh'} direction={{base: 'column', md: 'row'}}>
         <Flex p={8} flex={1} align={'center'} justify={'center'}>
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ errors, touched, isSubmitting }) => (
+            {({errors, touched, isSubmitting}) => (
               <Stack spacing={4} w={'full'} maxW={'md'}>
                 <Form>
                   <Stack align={'center'}>
@@ -101,13 +101,13 @@ const LoginPage = () => {
                   <Stack spacing={4}>
                     <FormControl isInvalid={!!errors.username && touched.username} isRequired>
                       <FormLabel htmlFor="username">Email</FormLabel>
-                      <Field as={Input} id="username" name="username" type="email" />
+                      <Field as={Input} id="username" name="username" type="email"/>
                       <FormErrorMessage>{errors.username}</FormErrorMessage>
                     </FormControl>
                     <FormControl isInvalid={!!errors.password && touched.password} isRequired>
                       <FormLabel htmlFor="password">Password</FormLabel>
                       <Field name='password'>
-                        {({ field, form }) => (
+                        {({field, form}) => (
                           <InputGroup>
                             <Input
                               {...field}
@@ -156,7 +156,7 @@ const LoginPage = () => {
             )}
           </Formik>
         </Flex>
-        <Flex flex={1} display={{ base: 'none', md: 'flex' }}>
+        <Flex flex={1} display={{base: 'none', md: 'flex'}}>
           <Image
             alt={'Login Image'}
             objectFit={'cover'}

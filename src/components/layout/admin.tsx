@@ -1,4 +1,4 @@
-import {PropsWithChildren, ReactNode} from "react";
+import {PropsWithChildren, ReactNode, useEffect, useState} from "react";
 import {
   IconButton,
   Box,
@@ -23,13 +23,16 @@ import {
   Avatar,
 } from '@chakra-ui/react'
 import {FiHome, FiMenu, FiChevronDown, FiUsers,} from 'react-icons/fi'
-import { IconType } from 'react-icons'
+import {IconType} from 'react-icons'
 import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
 import {ResponseType} from "../../types/response.type.ts";
 import {logoutUserAPI} from "../../services/auth.service.ts";
 import {doLogoutAccountAction} from "../../redux/account/accountSlice.ts";
 import logo from "../../../public/logo.png";
+import Profile from "../account/profile.tsx";
+import {getUserAPI} from "../../services/user.service.ts";
+import {UserType} from "../../types/user.type.ts";
 
 interface LinkItemProps {
   name: string,
@@ -53,11 +56,11 @@ interface SidebarProps extends BoxProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Dashboard', icon: FiHome, href: '/admin' },
-  { name: 'User', icon: FiUsers, href: '/admin/user' }
+  {name: 'Dashboard', icon: FiHome, href: '/admin'},
+  {name: 'User', icon: FiUsers, href: '/admin/user'}
 ]
 
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({onClose, ...rest}: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -67,13 +70,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }}
+      w={{base: 'full', md: 60}}
       pos="fixed"
       h="full"
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Image
-          display={{ base: 'none', md: 'flex' }}
+          display={{base: 'none', md: 'flex'}}
           boxSize={16}
           src={logo}
           alt={'Logo'}
@@ -81,7 +84,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <Text fontSize="lg" fontWeight="bold">
           Library App
         </Text>
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+        <CloseButton display={{base: 'flex', md: 'none'}} onClick={onClose}/>
       </Flex>
       {LinkItems.map((link) => (
         <NavItem selected={location.pathname} href={link.href} key={link.name} icon={link.icon} onClick={() => {
@@ -95,7 +98,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   )
 }
 
-const NavItem = ({ selected, href, icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({selected, href, icon, children, ...rest}: NavItemProps) => {
   return (
     <Flex
       align="center"
@@ -126,11 +129,17 @@ const NavItem = ({ selected, href, icon, children, ...rest }: NavItemProps) => {
   )
 }
 
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const MobileNav = ({onOpen, ...rest}: MobileProps) => {
   const user = useSelector(state => state.account.user);
   const toast = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const profile = useDisclosure();
+  const [data, setData] = useState<UserType>({});
+
+  useEffect(() => {
+    getProfile();
+  }, [user]);
 
   const handleLogout = async () => {
     const res: ResponseType = await logoutUserAPI();
@@ -150,86 +159,104 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     }
   }
 
+  const getProfile = async () => {
+    const res: ResponseType = await getUserAPI(user.id);
+    if (res && !res.error) {
+      setData(res.data);
+    } else {
+      toast({
+        title: res.error,
+        description: Array.isArray(res.message) ? res.message[0] : res.message,
+        status: 'error',
+      })
+    }
+  }
+
   return (
-    <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 4 }}
-      height="20"
-      alignItems="center"
-      bg={useColorModeValue('white', 'gray.900')}
-      borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
-      justifyContent={{ base: 'space-between', md: 'flex-end' }}
-      {...rest}>
-      <IconButton
-        display={{ base: 'flex', md: 'none' }}
-        onClick={onOpen}
-        variant="outline"
-        aria-label="open menu"
-        icon={<FiMenu />}
-      />
+    <>
+      <Flex
+        ml={{base: 0, md: 60}}
+        px={{base: 4, md: 4}}
+        height="20"
+        alignItems="center"
+        bg={useColorModeValue('white', 'gray.900')}
+        borderBottomWidth="1px"
+        borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
+        justifyContent={{base: 'space-between', md: 'flex-end'}}
+        {...rest}>
+        <IconButton
+          display={{base: 'flex', md: 'none'}}
+          onClick={onOpen}
+          variant="outline"
+          aria-label="open menu"
+          icon={<FiMenu/>}
+        />
 
-      <Image
-        display={{ base: 'flex', md: 'none' }}
-        boxSize={16}
-        src={logo}
-        alt={'Logo'}
-      />
+        <Image
+          display={{base: 'flex', md: 'none'}}
+          boxSize={16}
+          src={logo}
+          alt={'Logo'}
+        />
 
-      <HStack spacing={{ base: '0', md: '6' }}>
-        <Flex alignItems={'center'}>
-          <Menu>
-            <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
-              <HStack>
-                <Avatar size={'sm'}/>
-                <VStack
-                  display={{ base: 'none', md: 'flex' }}
-                  alignItems="flex-start"
-                  spacing="1px"
-                  ml="2">
-                  <Text fontSize="sm">{user.name}</Text>
-                  <Text fontSize="xs" color="gray.600">{user.role}</Text>
-                </VStack>
-                <Box display={{ base: 'none', md: 'flex' }}>
-                  <FiChevronDown />
-                </Box>
-              </HStack>
-            </MenuButton>
-            <MenuList
-              bg={useColorModeValue('white', 'gray.900')}
-              borderColor={useColorModeValue('gray.200', 'gray.700')}>
-              <MenuItem onClick={() => navigate('/')}>Home</MenuItem>
-              <MenuItem>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Log out</MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-      </HStack>
-    </Flex>
+        <HStack spacing={{base: '0', md: '6'}}>
+          <Flex alignItems={'center'}>
+            <Menu>
+              <MenuButton py={2} transition="all 0.3s" _focus={{boxShadow: 'none'}}>
+                <HStack>
+                  <Avatar size={'sm'}/>
+                  <VStack
+                    display={{base: 'none', md: 'flex'}}
+                    alignItems="flex-start"
+                    spacing="1px"
+                    ml="2">
+                    <Text fontSize="sm">{user.name}</Text>
+                    <Text fontSize="xs" color="gray.600">{user.role}</Text>
+                  </VStack>
+                  <Box display={{base: 'none', md: 'flex'}}>
+                    <FiChevronDown/>
+                  </Box>
+                </HStack>
+              </MenuButton>
+              <MenuList
+                bg={useColorModeValue('white', 'gray.900')}
+                borderColor={useColorModeValue('gray.200', 'gray.700')}>
+                <MenuItem onClick={() => navigate('/')}>Home</MenuItem>
+                <MenuItem onClick={profile.onOpen}>Profile</MenuItem>
+                <MenuItem onClick={handleLogout}>Log out</MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+        </HStack>
+      </Flex>
+      <Profile data={data} isOpen={profile.isOpen} onClose={profile.onClose}/>
+    </>
+
   )
 }
 
 const AdminLayout = (props: PropsWithChildren) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const layout = useDisclosure();
+
 
   return (
     <>
       <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-        <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+        <SidebarContent onClose={() => layout.onClose} display={{base: 'none', md: 'block'}}/>
         <Drawer
-          isOpen={isOpen}
+          isOpen={layout.isOpen}
           placement="left"
-          onClose={onClose}
+          onClose={layout.onClose}
           returnFocusOnClose={false}
-          onOverlayClick={onClose}
+          onOverlayClick={layout.onClose}
           size="full"
         >
           <DrawerContent>
-            <SidebarContent onClose={onClose} />
+            <SidebarContent onClose={layout.onClose}/>
           </DrawerContent>
         </Drawer>
-        <MobileNav onOpen={onOpen} />
-        <Box ml={{ base: 0, md: 60 }} p="4">
+        <MobileNav onOpen={layout.onOpen}/>
+        <Box ml={{base: 0, md: 60}} p="4">
           <Box bgColor={'white'} borderRadius={8} p={4}>
             {props.children}
           </Box>

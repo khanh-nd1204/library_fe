@@ -33,13 +33,13 @@ interface FormValues {
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required!").max(100, 'Name must be less than 100 characters!'),
   email: Yup.string().required('Email is required!').email('Invalid email!'),
-  password: Yup.string().required('Password is required!').min(6, 'Password must be at least 6 characters!').max(50, 'Name must be less than 50 characters'),
+  password: Yup.string().required('Password is required!').min(6, 'Password must be at least 6 characters!').max(50, 'Password must be less than 50 characters'),
   address: Yup.string().required("Address is required!").max(100, 'Address must be less than 100 characters!'),
   phone: Yup.string().required("Phone is required!").matches(/^\d{10}$/, 'Phone must be exactly 10 digits and numeric!'),
 })
 
 const RegisterPage = () => {
-  const initialValues: FormValues = { name: '', email: '', password: '', address: '', phone: '' };
+  const initialValues: FormValues = {name: '', email: '', password: '', address: '', phone: ''};
   const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -62,14 +62,14 @@ const RegisterPage = () => {
 
   return (
     <>
-      <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+      <Stack minH={'100vh'} direction={{base: 'column', md: 'row'}}>
         <Flex p={8} flex={1} align={'center'} justify={'center'}>
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ errors, touched, isSubmitting }) => (
+            {({errors, touched, isSubmitting}) => (
               <Stack spacing={4} w={'full'} maxW={'md'}>
                 <Form>
                   <Stack align={'center'}>
@@ -83,18 +83,18 @@ const RegisterPage = () => {
                   <Stack spacing={4}>
                     <FormControl isInvalid={!!errors.name && touched.name} isRequired>
                       <FormLabel htmlFor="name">Name</FormLabel>
-                      <Field as={Input} id="name" name="name" type="text" />
+                      <Field as={Input} id="name" name="name" type="text"/>
                       <FormErrorMessage>{errors.name}</FormErrorMessage>
                     </FormControl>
                     <FormControl isInvalid={!!errors.email && touched.email} isRequired>
                       <FormLabel htmlFor="email">Email</FormLabel>
-                      <Field as={Input} id="email" name="email" type="email" />
+                      <Field as={Input} id="email" name="email" type="email"/>
                       <FormErrorMessage>{errors.email}</FormErrorMessage>
                     </FormControl>
                     <FormControl isInvalid={!!errors.password && touched.password} isRequired>
                       <FormLabel htmlFor="password">Password</FormLabel>
                       <Field name='password'>
-                        {({ field, form }) => (
+                        {({field, form}) => (
                           <InputGroup>
                             <Input
                               {...field}
@@ -117,12 +117,12 @@ const RegisterPage = () => {
                     </FormControl>
                     <FormControl isInvalid={!!errors.address && touched.address} isRequired>
                       <FormLabel htmlFor="adress">Address</FormLabel>
-                      <Field as={Input} id="address" name="address" type="text" />
+                      <Field as={Input} id="address" name="address" type="text"/>
                       <FormErrorMessage>{errors.address}</FormErrorMessage>
                     </FormControl>
                     <FormControl isInvalid={!!errors.phone && touched.phone} isRequired>
                       <FormLabel htmlFor="phone">Phone</FormLabel>
-                      <Field as={Input} id="phone" name="phone" type="text" />
+                      <Field as={Input} id="phone" name="phone" type="text"/>
                       <FormErrorMessage>{errors.phone}</FormErrorMessage>
                     </FormControl>
                   </Stack>
@@ -146,7 +146,7 @@ const RegisterPage = () => {
             )}
           </Formik>
         </Flex>
-        <Flex flex={1} display={{ base: 'none', md: 'flex' }}>
+        <Flex flex={1} display={{base: 'none', md: 'flex'}}>
           <Image
             alt={'Register Image'}
             objectFit={'cover'}

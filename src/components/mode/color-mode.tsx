@@ -1,8 +1,8 @@
-import { Button, Flex, useColorMode } from '@chakra-ui/react'
-import { BsSun, BsMoonStarsFill } from 'react-icons/bs'
+import {Button, Flex, useColorMode} from '@chakra-ui/react'
+import {BsSun, BsMoonStarsFill} from 'react-icons/bs'
 
 const ColorModeToggle = () => {
-  const { colorMode, toggleColorMode } = useColorMode()
+  const {colorMode, toggleColorMode} = useColorMode()
   return (
     /**
      * Ideally, only the button component should be used (without Flex).
@@ -12,9 +12,9 @@ const ColorModeToggle = () => {
       <Button
         aria-label="Toggle Color Mode"
         onClick={toggleColorMode}
-        _focus={{ boxShadow: 'none' }}
+        _focus={{boxShadow: 'none'}}
         w="fit-content">
-        {colorMode === 'light' ? <BsMoonStarsFill /> : <BsSun />}
+        {colorMode === 'light' ? <BsMoonStarsFill/> : <BsSun/>}
       </Button>
     </Flex>
   )

@@ -32,13 +32,13 @@ interface FormValues {
 }
 
 const validationSchema = Yup.object().shape({
-  password: Yup.string().required('Password is required!').min(6, 'Password must be at least 6 characters!'),
+  password: Yup.string().required('Password is required!').min(6, 'Password must be at least 6 characters!').max(50, 'Password must be less than 50 characters'),
   otp: Yup.string().required('OTP is required').matches(/^\d{6}$/, 'OTP must be exactly 6 digits and numeric!')
 })
 
 const ResetPassword = (props: Props) => {
   const {isOpen, setIsOpen, email} = props;
-  const initialValues: FormValues = { otp: '', password: '' };
+  const initialValues: FormValues = {otp: '', password: ''};
   const toast = useToast();
   const [show, setShow] = useState(false);
 
@@ -68,15 +68,15 @@ const ResetPassword = (props: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={reset} closeOnOverlayClick={false} isCentered>
       <ModalOverlay/>
-      <ModalContent mx={{ base: 4 }}>
+      <ModalContent mx={{base: 4}}>
         <Formik initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={handleReset}
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({errors, touched, isSubmitting}) => (
             <Form>
               <Stack spacing={4} px={8} my={8}>
-                <Heading lineHeight={1.1} size={{ base: 'sm', md: 'md' }}>
+                <Heading lineHeight={1.1} size={{base: 'sm', md: 'md'}}>
                   Reset your password
                 </Heading>
                 <Stack spacing={4}>
@@ -84,19 +84,19 @@ const ResetPassword = (props: Props) => {
                     <FormLabel htmlFor="otp">OTP</FormLabel>
                     <HStack>
                       <Field name="otp">
-                        {({ field, form }) => (
+                        {({field, form}) => (
                           <PinInput
                             otp
                             type="number"
                             {...field}
                             onChange={(value) => form.setFieldValue(field.name, value)}
                           >
-                            <PinInputField />
-                            <PinInputField />
-                            <PinInputField />
-                            <PinInputField />
-                            <PinInputField />
-                            <PinInputField />
+                            <PinInputField/>
+                            <PinInputField/>
+                            <PinInputField/>
+                            <PinInputField/>
+                            <PinInputField/>
+                            <PinInputField/>
                           </PinInput>
                         )}
                       </Field>
@@ -107,7 +107,7 @@ const ResetPassword = (props: Props) => {
                   <FormControl isInvalid={!!errors.password && touched.password} isRequired>
                     <FormLabel htmlFor="password">Password</FormLabel>
                     <Field name='password'>
-                      {({ field, form }) => (
+                      {({field, form}) => (
                         <InputGroup>
                           <Input
                             {...field}
@@ -140,7 +140,7 @@ const ResetPassword = (props: Props) => {
                 </Stack>
               </Stack>
             </Form>
-            )}
+          )}
         </Formik>
       </ModalContent>
     </Modal>

@@ -32,7 +32,7 @@ interface FormValues {
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required!").max(100, 'Name must be less than 100 characters!'),
   email: Yup.string().required('Email is required!').email('Invalid email!'),
-  password: Yup.string().required('Password is required!').min(6, 'Password must be at least 6 characters!').max(50, 'Name must be less than 50 characters'),
+  password: Yup.string().required('Password is required!').min(6, 'Password must be at least 6 characters!').max(50, 'Password must be less than 50 characters'),
   address: Yup.string().required("Address is required!").max(100, 'Address must be less than 100 characters!'),
   phone: Yup.string().required("Phone is required!").matches(/^\d{10}$/, 'Phone must be exactly 10 digits and numeric!'),
 })
@@ -68,11 +68,11 @@ const CreateUser = (props: Props) => {
       placement='right'
       closeOnOverlayClick={false}
       onClose={onClose}
-      size={{ base: 'full', md: 'md' }}
+      size={{base: 'full', md: 'md'}}
     >
-      <DrawerOverlay />
+      <DrawerOverlay/>
       <DrawerContent>
-        <DrawerCloseButton />
+        <DrawerCloseButton/>
         <DrawerHeader>Create user</DrawerHeader>
         <DrawerBody>
           <Formik
@@ -80,25 +80,25 @@ const CreateUser = (props: Props) => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ errors, touched, isSubmitting }) => (
+            {({errors, touched, isSubmitting}) => (
               <Stack spacing={4} w={'full'} h={'full'}>
-                <Form style={{ height: '100%' }}>
+                <Form style={{height: '100%'}}>
                   <Flex h={'full'} direction={"column"} justify={'space-between'}>
                     <Stack spacing={4}>
                       <FormControl isInvalid={!!errors.name && touched.name} isRequired>
                         <FormLabel htmlFor="name">Name</FormLabel>
-                        <Field as={Input} id="name" name="name" type="text" />
+                        <Field as={Input} id="name" name="name" type="text"/>
                         <FormErrorMessage>{errors.name}</FormErrorMessage>
                       </FormControl>
                       <FormControl isInvalid={!!errors.email && touched.email} isRequired>
                         <FormLabel htmlFor="email">Email</FormLabel>
-                        <Field as={Input} id="email" name="email" type="email" />
+                        <Field as={Input} id="email" name="email" type="email"/>
                         <FormErrorMessage>{errors.email}</FormErrorMessage>
                       </FormControl>
                       <FormControl isInvalid={!!errors.password && touched.password} isRequired>
                         <FormLabel htmlFor="password">Password</FormLabel>
                         <Field name='password'>
-                          {({ field, form }) => (
+                          {({field, form}) => (
                             <InputGroup>
                               <Input
                                 {...field}
@@ -121,12 +121,12 @@ const CreateUser = (props: Props) => {
                       </FormControl>
                       <FormControl isInvalid={!!errors.address && touched.address} isRequired>
                         <FormLabel htmlFor="adress">Address</FormLabel>
-                        <Field as={Input} id="address" name="address" type="text" />
+                        <Field as={Input} id="address" name="address" type="text"/>
                         <FormErrorMessage>{errors.address}</FormErrorMessage>
                       </FormControl>
                       <FormControl isInvalid={!!errors.phone && touched.phone} isRequired>
                         <FormLabel htmlFor="phone">Phone</FormLabel>
-                        <Field as={Input} id="phone" name="phone" type="text" />
+                        <Field as={Input} id="phone" name="phone" type="text"/>
                         <FormErrorMessage>{errors.phone}</FormErrorMessage>
                       </FormControl>
                     </Stack>

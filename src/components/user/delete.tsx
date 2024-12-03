@@ -13,7 +13,7 @@ interface Props {
 }
 
 const DeleteUser = (props: Props) => {
-  const { dataSelected, getUserList, onClose, isOpen } = props;
+  const {dataSelected, getUserList, onClose, isOpen} = props;
   const toast = useToast();
 
   const deleteUser = async () => {
@@ -36,12 +36,12 @@ const DeleteUser = (props: Props) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false} isCentered>
-      <ModalOverlay />
+      <ModalOverlay/>
       <ModalContent>
         <ModalHeader>Confirmation</ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton/>
         <ModalBody>
-          Are you sure you want to delete user <span style={{ color: 'teal', fontWeight: 500 }} >{dataSelected.name}</span>?
+          Are you sure you want to delete user <span style={{color: 'teal', fontWeight: 500}}>{dataSelected.name}</span>?
         </ModalBody>
         <ModalFooter>
           <Button variant='outline' onClick={onClose} mr={3}>Cancel</Button>

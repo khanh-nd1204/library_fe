@@ -6,7 +6,7 @@ import {
   useColorModeValue,
   HStack,
 } from '@chakra-ui/react';
-import { PinInput, PinInputField } from '@chakra-ui/react';
+import {PinInput, PinInputField} from '@chakra-ui/react';
 import {useState} from "react";
 import {ResponseType} from "../../types/response.type.ts";
 import {activateUserAPI} from "../../services/auth.service.ts";
@@ -64,18 +64,18 @@ const VerifyEmail = (props: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={reset} closeOnOverlayClick={false} isCentered>
       <ModalOverlay/>
-      <ModalContent mx={{ base: 4 }}>
+      <ModalContent mx={{base: 4}}>
         <Stack spacing={4} px={8} my={8}>
-          <Heading lineHeight={1.1} size={{ base: 'lg', md: 'xl' }} textAlign={'center'}>
+          <Heading lineHeight={1.1} size={{base: 'lg', md: 'xl'}} textAlign={'center'}>
             Verify your Email
           </Heading>
           <Center
-            fontSize={{ base: 'sm', sm: 'md' }}
+            fontSize={{base: 'sm', sm: 'md'}}
             color={useColorModeValue('gray.800', 'gray.400')}>
             We have sent code to your email
           </Center>
           <Center
-            fontSize={{ base: 'sm', sm: 'md' }}
+            fontSize={{base: 'sm', sm: 'md'}}
             fontWeight="bold"
             color={useColorModeValue('gray.800', 'gray.400')}>
             {email}
@@ -83,12 +83,12 @@ const VerifyEmail = (props: Props) => {
           <FormControl isInvalid={error} isRequired>
             <HStack justify={'center'}>
               <PinInput otp type="number" onChange={(value) => setOtp(value)}>
-                <PinInputField />
-                <PinInputField />
-                <PinInputField />
-                <PinInputField />
-                <PinInputField />
-                <PinInputField />
+                <PinInputField/>
+                <PinInputField/>
+                <PinInputField/>
+                <PinInputField/>
+                <PinInputField/>
+                <PinInputField/>
               </PinInput>
             </HStack>
             <Center>

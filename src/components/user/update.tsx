@@ -76,11 +76,11 @@ const UpdateUser = (props: Props) => {
       placement='right'
       closeOnOverlayClick={false}
       onClose={onClose}
-      size={{ base: 'full', md: 'md' }}
+      size={{base: 'full', md: 'md'}}
     >
-      <DrawerOverlay />
+      <DrawerOverlay/>
       <DrawerContent>
-        <DrawerCloseButton />
+        <DrawerCloseButton/>
         <DrawerHeader>Update user</DrawerHeader>
 
         <DrawerBody>
@@ -89,32 +89,32 @@ const UpdateUser = (props: Props) => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ errors, touched, isSubmitting }) => (
+            {({errors, touched, isSubmitting}) => (
               <Stack spacing={4} w={'full'} h={'full'}>
-                <Form style={{ height: '100%' }}>
+                <Form style={{height: '100%'}}>
                   <Flex h={'full'} direction={"column"} justify={'space-between'}>
                     <Stack spacing={4}>
-                      <FormControl isDisabled>
-                        <FormLabel htmlFor="id">ID</FormLabel>
-                        <Field as={Input} id="id" name="id" type="text" />
-                      </FormControl>
+                      {/*<FormControl isDisabled>*/}
+                      {/*  <FormLabel htmlFor="id">ID</FormLabel>*/}
+                      {/*  <Field as={Input} id="id" name="id" type="text"/>*/}
+                      {/*</FormControl>*/}
                       <FormControl isDisabled>
                         <FormLabel htmlFor="email">Email</FormLabel>
                         <Input id="email" name="email" type="email" value={dataSelected.email}/>
                       </FormControl>
                       <FormControl isInvalid={!!errors.name && touched.name} isRequired>
                         <FormLabel htmlFor="name">Name</FormLabel>
-                        <Field as={Input} id="name" name="name" type="text" />
+                        <Field as={Input} id="name" name="name" type="text"/>
                         <FormErrorMessage>{errors.name}</FormErrorMessage>
                       </FormControl>
                       <FormControl isInvalid={!!errors.address && touched.address} isRequired>
                         <FormLabel htmlFor="adress">Address</FormLabel>
-                        <Field as={Input} id="address" name="address" type="text" />
+                        <Field as={Input} id="address" name="address" type="text"/>
                         <FormErrorMessage>{errors.address}</FormErrorMessage>
                       </FormControl>
                       <FormControl isInvalid={!!errors.phone && touched.phone} isRequired>
                         <FormLabel htmlFor="phone">Phone</FormLabel>
-                        <Field as={Input} id="phone" name="phone" type="text" />
+                        <Field as={Input} id="phone" name="phone" type="text"/>
                         <FormErrorMessage>{errors.phone}</FormErrorMessage>
                       </FormControl>
                     </Stack>

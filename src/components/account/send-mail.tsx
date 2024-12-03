@@ -73,13 +73,13 @@ const SendMail = (props: Props) => {
     <>
       <Modal isOpen={isOpen} onClose={reset} closeOnOverlayClick={false} isCentered>
         <ModalOverlay/>
-        <ModalContent mx={{ base: 4 }}>
+        <ModalContent mx={{base: 4}}>
           <Stack spacing={4} px={8} my={8}>
-            <Heading lineHeight={1.1} size={{ base: 'sm', md: 'md' }}>
+            <Heading lineHeight={1.1} size={{base: 'sm', md: 'md'}}>
               {type === 'password' ? 'Forgot your password' : 'Reactivate account'}
             </Heading>
             <Text
-              fontSize={{ base: 'sm', sm: 'md' }}
+              fontSize={{base: 'sm', sm: 'md'}}
               color={useColorModeValue('gray.800', 'gray.400')}>
               You&apos;ll get an email with a OTP
             </Text>
@@ -100,17 +100,17 @@ const SendMail = (props: Props) => {
               variant={'solid'}
               onClick={handleRequest}
               type={'submit'}
-              size={{ base: 'sm', md: 'md' }}
+              size={{base: 'sm', md: 'md'}}
             >
               Request
             </Button>
-            <Button colorScheme='gray' ml={3} onClick={reset} size={{ base: 'sm', md: 'md' }} disabled={loading}>
+            <Button colorScheme='gray' ml={3} onClick={reset} size={{base: 'sm', md: 'md'}} disabled={loading}>
               Close
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <ResetPassword isOpen={isOpenPass} setIsOpen={setIsOpenPass} email={email} />
+      <ResetPassword isOpen={isOpenPass} setIsOpen={setIsOpenPass} email={email}/>
       <VerifyEmail isOpen={isOpenVerify} email={email} setIsOpen={setIsOpenVerify}/>
     </>
   )

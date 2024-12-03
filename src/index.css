@@ -43,4 +43,6 @@ a {
   background: #b0b0b0;
 }
 
-
+#nprogress .bar {
+  background: teal !important;
+}
