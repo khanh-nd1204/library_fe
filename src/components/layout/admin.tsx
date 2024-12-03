@@ -22,7 +22,7 @@ import {
   Image,
   Avatar,
 } from '@chakra-ui/react'
-import {FiHome, FiMenu, FiChevronDown, FiUsers,} from 'react-icons/fi'
+import {FiHome, FiMenu, FiChevronDown, FiUsers, FiGrid, FiPocket,} from 'react-icons/fi'
 import {IconType} from 'react-icons'
 import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -57,7 +57,9 @@ interface SidebarProps extends BoxProps {
 
 const LinkItems: Array<LinkItemProps> = [
   {name: 'Dashboard', icon: FiHome, href: '/admin'},
-  {name: 'User', icon: FiUsers, href: '/admin/user'}
+  {name: 'User', icon: FiUsers, href: '/admin/user'},
+  {name: 'Permission', icon: FiGrid, href: '/admin/permission'},
+  {name: 'Role', icon: FiPocket, href: '/admin/role'}
 ]
 
 const SidebarContent = ({onClose, ...rest}: SidebarProps) => {
@@ -237,7 +239,6 @@ const MobileNav = ({onOpen, ...rest}: MobileProps) => {
 
 const AdminLayout = (props: PropsWithChildren) => {
   const layout = useDisclosure();
-
 
   return (
     <>

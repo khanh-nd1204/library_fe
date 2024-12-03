@@ -1,7 +1,5 @@
 import {useEffect, useState} from "react";
-import {getUsersAPI} from "../../services/user.service.ts";
 import {
-  Badge,
   Button,
   Flex,
   HStack,
@@ -21,15 +19,17 @@ import {
   useToast
 } from '@chakra-ui/react'
 import {ResponseType} from "../../types/response.type.ts";
-import {UserType} from "../../types/user.type.ts";
 import {AddIcon, ChevronDownIcon, ChevronUpIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons";
 import {useDebouncedCallback} from 'use-debounce';
 import {Pagination} from 'chakra-pagination/src/components';
-import UpdateUser from "../../components/user/update.tsx";
-import DeleteUser from "../../components/user/delete.tsx";
-import CreateUser from "../../components/user/create.tsx";
+import {getRolesAPI} from "../../services/role.service.ts";
+import {RoleType} from "../../types/role.type.ts";
+import DeleteRole from "../../components/role/delete.tsx";
+import CreateRole from "../../components/role/create.tsx";
+import {getPermissionsAPI} from "../../services/permission.service.ts";
+import UpdateRole from "../../components/role/update.tsx";
 
-const UserPage = () => {
+const RolePage = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
@@ -44,33 +44,34 @@ const UserPage = () => {
       value: 'name'
     },
     {
-      name: 'email',
-      value: 'email'
+      name: 'description',
+      value: 'description'
     },
     {
-      name: 'phone',
-      value: 'phone'
+      name: 'created at',
+      value: 'createdAt'
     },
     {
-      name: 'address',
-      value: 'address'
+      name: 'updated at',
+      value: 'updatedAt'
     }
   ];
   const [filter, setFilter] = useState('');
-  const [dataSelected, setDataSelected] = useState<UserType>({});
+  const [dataSelected, setDataSelected] = useState<RoleType>({});
   const update = useDisclosure();
   const create = useDisclosure();
   const remove = useDisclosure();
+  const [permissionList, setPermissionList] = useState([]);
 
   useEffect(() => {
-    getUserList();
+    getRoleList();
   }, [sort, sortDirection, filter, page, size]);
 
-  const getUserList = async () => {
+  const getRoleList = async () => {
     const filterStr = 'filter=' + columns.map((item) => `${item.value}~'${filter}'`).join(' or ');
     const query = `page=${page}&size=${size}&sort=${sort},${sortDirection}&${filterStr}`;
     setLoading(true);
-    const res: ResponseType = await getUsersAPI(query);
+    const res: ResponseType = await getRolesAPI(query);
     setLoading(false);
     if (res && res.data) {
       setData(res.data.data);
@@ -86,6 +87,29 @@ const UserPage = () => {
       })
     }
   }
+
+  useEffect(() => {
+    const getPermissionList = async () => {
+      const query = `page=${1}&size=${100}`;
+      const res: ResponseType = await getPermissionsAPI(query);
+      if (res && res.data) {
+        const groupedByModule = res.data.data.reduce((result, api) => {
+          const {module, ...apiDetails} = api;
+          if (!result[module]) {
+            result[module] = {module, api: []};
+          }
+          result[module].api.push(apiDetails);
+          return result;
+        }, {});
+        const resultList = Object.values(groupedByModule);
+        setPermissionList(resultList);
+      } else {
+        setPermissionList([]);
+        console.error(res.message);
+      }
+    }
+    getPermissionList();
+  }, []);
 
   const handleSort = (sort: string) => {
     setSort(sort);
@@ -112,7 +136,7 @@ const UserPage = () => {
   return (
     <>
       <Flex justify='space-between' mb={4} direction={{base: 'column', md: 'row'}} gap={4}>
-        <Input placeholder='Search user' maxW={{base: 'full', md: '300'}}
+        <Input placeholder='Search role' maxW={{base: 'full', md: '300'}}
                onChange={(e) => debounced(e.target.value)}
         />
         <Button colorScheme='teal' maxW={'max-content'} ml={'auto'} variant={'solid'} rightIcon={<AddIcon/>}
@@ -125,7 +149,7 @@ const UserPage = () => {
           <Thead>
             <Tr>
               <Th fontSize='sm'>#</Th>
-              {columns.map(item => {
+              {columns.map((item) => {
                 return <Th key={item.value}>
                   <Button
                     p={0}
@@ -149,78 +173,47 @@ const UserPage = () => {
                   _hover={{bg: 'none', cursor: 'default'}}
                   variant="ghost"
                 >
-                  ROLE
-                </Button>
-              </Th>
-              <Th>
-                <Button
-                  p={0}
-                  fontSize='sm'
-                  fontWeight={500}
-                  _hover={{bg: 'none', cursor: 'default'}}
-                  variant="ghost"
-                >
-                  STATUS
-                </Button>
-              </Th>
-              <Th>
-                <Button
-                  p={0}
-                  fontSize='sm'
-                  fontWeight={500}
-                  _hover={{bg: 'none', cursor: 'default'}}
-                  variant="ghost"
-                >
                   ACTIONS
                 </Button>
               </Th>
             </Tr>
           </Thead>
           <Tbody>
-            {data.map((item: UserType, index) => {
+            {data.map((item: RoleType, index) => {
               return (
                 <Tr key={item.id}>
                   <Td><Skeleton isLoaded={!loading}>{index + 1 + (page - 1) * size}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.name}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.email}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.phone}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.address}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.role}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.description}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.createdAt}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.updatedAt}</Skeleton></Td>
                   <Td>
-                    <Skeleton isLoaded={!loading}>
-                      {item.active ? <Badge colorScheme='green'>Active</Badge> :
-                        <Badge colorScheme='red'>Inactive</Badge>}
-                    </Skeleton>
-                  </Td>
-                  <Td>
-                    {item.active &&
-                        <HStack>
-                            <Skeleton isLoaded={!loading}>
-                                <Tooltip label='Edit'>
-                                    <IconButton
-                                        aria-label='Edit'
-                                        icon={<EditIcon/>}
-                                        onClick={() => {
-                                          update.onOpen();
-                                          setDataSelected(item);
-                                        }}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                            <Skeleton isLoaded={!loading}>
-                                <Tooltip label='Delete'>
-                                    <IconButton
-                                        aria-label='Delete'
-                                        icon={<DeleteIcon/>}
-                                        onClick={() => {
-                                          remove.onOpen();
-                                          setDataSelected(item);
-                                        }}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                        </HStack>
-                    }
+                    <HStack>
+                      <Skeleton isLoaded={!loading}>
+                        <Tooltip label='Edit'>
+                          <IconButton
+                            aria-label='Edit'
+                            icon={<EditIcon/>}
+                            onClick={() => {
+                              update.onOpen();
+                              setDataSelected(item);
+                            }}
+                          />
+                        </Tooltip>
+                      </Skeleton>
+                      <Skeleton isLoaded={!loading}>
+                        <Tooltip label='Delete'>
+                          <IconButton
+                            aria-label='Delete'
+                            icon={<DeleteIcon/>}
+                            onClick={() => {
+                              remove.onOpen();
+                              setDataSelected(item);
+                            }}
+                          />
+                        </Tooltip>
+                      </Skeleton>
+                    </HStack>
                   </Td>
                 </Tr>
               );
@@ -249,13 +242,14 @@ const UserPage = () => {
         />
       </Flex>
 
-      <CreateUser isOpen={create.isOpen} onClose={create.onClose} getUserList={getUserList}/>
-      <UpdateUser isOpen={update.isOpen} onClose={update.onClose} getUserList={getUserList}
-                  dataSelected={dataSelected}/>
-      <DeleteUser isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected} getUserList={getUserList}
+      <CreateRole isOpen={create.isOpen} onClose={create.onClose} getRoleList={getRoleList}
+                  permissionList={permissionList}/>
+      <UpdateRole isOpen={update.isOpen} onClose={update.onClose} dataSelected={dataSelected} getRoleList={getRoleList}
+                  permissionList={permissionList}/>
+      <DeleteRole isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected} getRoleList={getRoleList}
                   setPage={setPage}/>
     </>
   )
 }
 
-export default UserPage
+export default RolePage

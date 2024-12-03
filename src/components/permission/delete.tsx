@@ -1,24 +1,24 @@
 import {
   Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast
 } from "@chakra-ui/react";
-import {UserType} from "../../types/user.type.ts";
 import {ResponseType} from "../../types/response.type.ts";
-import {deleteUserAPI} from "../../services/user.service.ts";
+import {PermissionType} from "../../types/permission.type.ts";
+import {deletePermissionAPI} from "../../services/permission.service.ts";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  dataSelected: UserType;
-  getUserList: () => void;
+  dataSelected: PermissionType;
+  getPermissionList: () => void;
   setPage: (page: number) => void;
 }
 
-const DeleteUser = (props: Props) => {
-  const {dataSelected, onClose, isOpen, getUserList, setPage} = props;
+const DeletePermission = (props: Props) => {
+  const {dataSelected, onClose, isOpen, getPermissionList, setPage} = props;
   const toast = useToast();
 
-  const deleteUser = async () => {
-    const res: ResponseType = await deleteUserAPI(dataSelected.id);
+  const deletePermission = async () => {
+    const res: ResponseType = await deletePermissionAPI(dataSelected.id);
     if (res && !res.error) {
       toast({
         description: res.message,
@@ -26,7 +26,7 @@ const DeleteUser = (props: Props) => {
       })
       onClose();
       setPage(1);
-      getUserList();
+      getPermissionList();
     } else {
       toast({
         title: res.error,
@@ -43,15 +43,16 @@ const DeleteUser = (props: Props) => {
         <ModalHeader>Confirmation</ModalHeader>
         <ModalCloseButton/>
         <ModalBody>
-          Are you sure you want to delete user <span style={{color: 'teal', fontWeight: 500}}>{dataSelected.name}</span>?
+          Are you sure you want to delete permission <span
+          style={{color: 'teal', fontWeight: 500}}>{dataSelected.name}</span>?
         </ModalBody>
         <ModalFooter>
           <Button variant='outline' onClick={onClose} mr={3}>Cancel</Button>
-          <Button colorScheme='red' mr={3} onClick={deleteUser}>Delete</Button>
+          <Button colorScheme='red' mr={3} onClick={deletePermission}>Delete</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
   )
 }
 
-export default DeleteUser
+export default DeletePermission

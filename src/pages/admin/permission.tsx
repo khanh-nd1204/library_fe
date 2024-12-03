@@ -1,7 +1,5 @@
 import {useEffect, useState} from "react";
-import {getUsersAPI} from "../../services/user.service.ts";
 import {
-  Badge,
   Button,
   Flex,
   HStack,
@@ -21,15 +19,16 @@ import {
   useToast
 } from '@chakra-ui/react'
 import {ResponseType} from "../../types/response.type.ts";
-import {UserType} from "../../types/user.type.ts";
 import {AddIcon, ChevronDownIcon, ChevronUpIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons";
 import {useDebouncedCallback} from 'use-debounce';
 import {Pagination} from 'chakra-pagination/src/components';
-import UpdateUser from "../../components/user/update.tsx";
-import DeleteUser from "../../components/user/delete.tsx";
-import CreateUser from "../../components/user/create.tsx";
+import {getPermissionsAPI} from "../../services/permission.service.ts";
+import {PermissionType} from "../../types/permission.type.ts";
+import CreatePermission from "../../components/permission/create.tsx";
+import UpdatePermission from "../../components/permission/update.tsx";
+import DeletePermission from "../../components/permission/delete.tsx";
 
-const UserPage = () => {
+const PermissionPage = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
@@ -44,33 +43,33 @@ const UserPage = () => {
       value: 'name'
     },
     {
-      name: 'email',
-      value: 'email'
+      name: 'method',
+      value: 'method'
     },
     {
-      name: 'phone',
-      value: 'phone'
+      name: 'module',
+      value: 'module'
     },
     {
-      name: 'address',
-      value: 'address'
+      name: 'api path',
+      value: 'apiPath'
     }
   ];
   const [filter, setFilter] = useState('');
-  const [dataSelected, setDataSelected] = useState<UserType>({});
+  const [dataSelected, setDataSelected] = useState<PermissionType>({});
   const update = useDisclosure();
   const create = useDisclosure();
   const remove = useDisclosure();
 
   useEffect(() => {
-    getUserList();
+    getPermissionList();
   }, [sort, sortDirection, filter, page, size]);
 
-  const getUserList = async () => {
+  const getPermissionList = async () => {
     const filterStr = 'filter=' + columns.map((item) => `${item.value}~'${filter}'`).join(' or ');
     const query = `page=${page}&size=${size}&sort=${sort},${sortDirection}&${filterStr}`;
     setLoading(true);
-    const res: ResponseType = await getUsersAPI(query);
+    const res: ResponseType = await getPermissionsAPI(query);
     setLoading(false);
     if (res && res.data) {
       setData(res.data.data);
@@ -112,7 +111,7 @@ const UserPage = () => {
   return (
     <>
       <Flex justify='space-between' mb={4} direction={{base: 'column', md: 'row'}} gap={4}>
-        <Input placeholder='Search user' maxW={{base: 'full', md: '300'}}
+        <Input placeholder='Search permission' maxW={{base: 'full', md: '300'}}
                onChange={(e) => debounced(e.target.value)}
         />
         <Button colorScheme='teal' maxW={'max-content'} ml={'auto'} variant={'solid'} rightIcon={<AddIcon/>}
@@ -149,78 +148,52 @@ const UserPage = () => {
                   _hover={{bg: 'none', cursor: 'default'}}
                   variant="ghost"
                 >
-                  ROLE
-                </Button>
-              </Th>
-              <Th>
-                <Button
-                  p={0}
-                  fontSize='sm'
-                  fontWeight={500}
-                  _hover={{bg: 'none', cursor: 'default'}}
-                  variant="ghost"
-                >
-                  STATUS
-                </Button>
-              </Th>
-              <Th>
-                <Button
-                  p={0}
-                  fontSize='sm'
-                  fontWeight={500}
-                  _hover={{bg: 'none', cursor: 'default'}}
-                  variant="ghost"
-                >
                   ACTIONS
                 </Button>
               </Th>
             </Tr>
           </Thead>
           <Tbody>
-            {data.map((item: UserType, index) => {
+            {data.map((item: PermissionType, index) => {
               return (
                 <Tr key={item.id}>
                   <Td><Skeleton isLoaded={!loading}>{index + 1 + (page - 1) * size}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.name}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.email}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.phone}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.address}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.role}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>
+                    {item.method === 'POST' && <span style={{color: 'yellow'}}>{item.method}</span>}
+                    {item.method === 'PATCH' && <span style={{color: 'violet'}}>{item.method}</span>}
+                    {item.method === 'DELETE' && <span style={{color: 'red'}}>{item.method}</span>}
+                    {item.method === 'GET' && <span style={{color: 'green'}}>{item.method}</span>}
+                  </Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.module}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.apiPath}</Skeleton></Td>
                   <Td>
-                    <Skeleton isLoaded={!loading}>
-                      {item.active ? <Badge colorScheme='green'>Active</Badge> :
-                        <Badge colorScheme='red'>Inactive</Badge>}
-                    </Skeleton>
-                  </Td>
-                  <Td>
-                    {item.active &&
-                        <HStack>
-                            <Skeleton isLoaded={!loading}>
-                                <Tooltip label='Edit'>
-                                    <IconButton
-                                        aria-label='Edit'
-                                        icon={<EditIcon/>}
-                                        onClick={() => {
-                                          update.onOpen();
-                                          setDataSelected(item);
-                                        }}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                            <Skeleton isLoaded={!loading}>
-                                <Tooltip label='Delete'>
-                                    <IconButton
-                                        aria-label='Delete'
-                                        icon={<DeleteIcon/>}
-                                        onClick={() => {
-                                          remove.onOpen();
-                                          setDataSelected(item);
-                                        }}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                        </HStack>
-                    }
+                    <HStack>
+                      <Skeleton isLoaded={!loading}>
+                        <Tooltip label='Edit'>
+                          <IconButton
+                            aria-label='Edit'
+                            icon={<EditIcon/>}
+                            onClick={() => {
+                              update.onOpen();
+                              setDataSelected(item);
+                            }}
+                          />
+                        </Tooltip>
+                      </Skeleton>
+                      <Skeleton isLoaded={!loading}>
+                        <Tooltip label='Delete'>
+                          <IconButton
+                            aria-label='Delete'
+                            icon={<DeleteIcon/>}
+                            onClick={() => {
+                              remove.onOpen();
+                              setDataSelected(item);
+                            }}
+                          />
+                        </Tooltip>
+                      </Skeleton>
+                    </HStack>
                   </Td>
                 </Tr>
               );
@@ -249,13 +222,13 @@ const UserPage = () => {
         />
       </Flex>
 
-      <CreateUser isOpen={create.isOpen} onClose={create.onClose} getUserList={getUserList}/>
-      <UpdateUser isOpen={update.isOpen} onClose={update.onClose} getUserList={getUserList}
-                  dataSelected={dataSelected}/>
-      <DeleteUser isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected} getUserList={getUserList}
-                  setPage={setPage}/>
+      <CreatePermission isOpen={create.isOpen} onClose={create.onClose} getPermissionList={getPermissionList}/>
+      <UpdatePermission isOpen={update.isOpen} onClose={update.onClose} getPermissionList={getPermissionList}
+                        dataSelected={dataSelected}/>
+      <DeletePermission isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected}
+                        getPermissionList={getPermissionList} setPage={setPage}/>
     </>
   )
 }
 
-export default UserPage
+export default PermissionPage

@@ -10,7 +10,8 @@ import {
   ModalOverlay,
   ModalContent,
   Modal,
-  ModalFooter, FormErrorMessage,
+  ModalFooter,
+  FormErrorMessage,
 } from '@chakra-ui/react'
 import {useState} from "react";
 import * as Yup from "yup";

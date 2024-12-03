@@ -14,6 +14,8 @@ import RegisterPage from "./pages/register/register.tsx";
 import HomePage from "./pages/home/home.tsx";
 import ClientLayout from "./components/layout/client.tsx";
 import {UserType} from "./types/user.type.ts";
+import PermissionPage from "./pages/admin/permission.tsx";
+import RolePage from "./pages/admin/role.tsx";
 
 
 function App() {
@@ -22,22 +24,18 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAccount = async () => {
-      const res: ResponseType = await getAccountAPI();
-      setLoading(false);
-      if (res && res.data) {
-        dispatch(doGetAccountAction(res.data));
-      } else {
-        console.error(res.message);
-      }
-    };
     fetchAccount();
-    // if (!["/login", "/register"].includes(window.location.pathname)) {
-    //   fetchAccount();
-    // } else {
-    //   setLoading(false);
-    // }
   }, []);
+
+  const fetchAccount = async () => {
+    const res: ResponseType = await getAccountAPI();
+    setLoading(false);
+    if (res && res.data) {
+      dispatch(doGetAccountAction(res.data));
+    } else {
+      console.error(res.message);
+    }
+  };
 
   const router = createBrowserRouter([
     {
@@ -56,6 +54,8 @@ function App() {
       children: [
         {index: true, element: <DashboardPage/>},
         {path: "user", element: <UserPage/>},
+        {path: "permission", element: <PermissionPage/>},
+        {path: "role", element: <RolePage/>},
       ],
     },
     {path: "/login", element: user.id ? <Navigate to="/" replace/> : <LoginPage/>},

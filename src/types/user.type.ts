@@ -1,11 +1,11 @@
 export type UserType = {
+  id: number,
   name?: string,
   email?: string,
   username?: string,
   password?: string,
   role?: string,
   otp?: number,
-  id: number,
   address?: string,
   phone?: string,
   currentPassword?: string,

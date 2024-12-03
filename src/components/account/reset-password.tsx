@@ -11,7 +11,11 @@ import {
   FormErrorMessage,
   FormLabel,
   PinInput,
-  PinInputField, HStack, InputGroup, InputRightElement, IconButton,
+  PinInputField,
+  HStack,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from '@chakra-ui/react'
 import * as Yup from "yup";
 import {ResponseType} from "../../types/response.type.ts";

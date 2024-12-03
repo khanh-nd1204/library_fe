@@ -21,11 +21,11 @@ export const accountSlice = createSlice({
       state.user = action.payload;
     },
     doLogoutAccountAction: (state) => {
-      state.user = {};
+      state.user = {} as UserType;
       localStorage.removeItem("accessToken");
     },
     doUpdateAccountAction: (state, action) => {
-      state.user.name = action.payload.name;
+      state.user = action.payload;
       localStorage.removeItem("accessToken");
     },
   },
