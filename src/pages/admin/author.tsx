@@ -17,19 +17,18 @@ import {
   Tr,
   useDisclosure,
   useToast
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 import {ResponseType} from "../../types/response.type.ts";
+import {useDebouncedCallback} from "use-debounce";
 import {AddIcon, ChevronDownIcon, ChevronUpIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons";
-import {useDebouncedCallback} from 'use-debounce';
-import {Pagination} from 'chakra-pagination/src/components';
-import {getRolesAPI} from "../../services/role.service.ts";
-import {RoleType} from "../../types/role.type.ts";
-import DeleteRole from "../../components/role/delete.tsx";
-import CreateRole from "../../components/role/create.tsx";
-import {getPermissionsAPI} from "../../services/permission.service.ts";
-import UpdateRole from "../../components/role/update.tsx";
+import {Pagination} from "chakra-pagination/src/components";
+import {getAuthorsAPI} from "../../services/author.service.ts";
+import {AuthorType} from "../../types/author.type.ts";
+import CreateAuthor from "../../components/author/create.tsx";
+import UpdateAuthor from "../../components/author/update.tsx";
+import DeleteAuthor from "../../components/author/delete.tsx";
 
-const RolePage = () => {
+const AuthorPage = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
@@ -44,8 +43,12 @@ const RolePage = () => {
       value: 'name'
     },
     {
-      name: 'description',
-      value: 'description'
+      name: 'nationality',
+      value: 'nationality'
+    },
+    {
+      name: 'pen name',
+      value: 'penName'
     },
     {
       name: 'created at',
@@ -57,21 +60,20 @@ const RolePage = () => {
     }
   ];
   const [filter, setFilter] = useState('');
-  const [dataSelected, setDataSelected] = useState<RoleType>({});
+  const [dataSelected, setDataSelected] = useState<AuthorType>({});
   const update = useDisclosure();
   const create = useDisclosure();
   const remove = useDisclosure();
-  const [permissionList, setPermissionList] = useState([]);
 
   useEffect(() => {
-    getRoleList();
+    getAuthorList();
   }, [sort, sortDirection, filter, page, size]);
 
-  const getRoleList = async () => {
+  const getAuthorList = async () => {
     const filterStr = 'filter=' + columns.map((item) => `${item.value}~'${filter}'`).join(' or ');
     const query = `page=${page}&size=${size}&sort=${sort},${sortDirection}&${filterStr}`;
     setLoading(true);
-    const res: ResponseType = await getRolesAPI(query);
+    const res: ResponseType = await getAuthorsAPI(query);
     setLoading(false);
     if (res && res.data) {
       setData(res.data.data);
@@ -87,29 +89,6 @@ const RolePage = () => {
       })
     }
   }
-
-  useEffect(() => {
-    const getPermissionList = async () => {
-      const query = `page=${1}&size=${100}`;
-      const res: ResponseType = await getPermissionsAPI(query);
-      if (res && res.data) {
-        const groupedByModule = res.data.data.reduce((result, api) => {
-          const {module, ...apiDetails} = api;
-          if (!result[module]) {
-            result[module] = {module, api: []};
-          }
-          result[module].api.push(apiDetails);
-          return result;
-        }, {});
-        const resultList = Object.values(groupedByModule);
-        setPermissionList(resultList);
-      } else {
-        setPermissionList([]);
-        console.error(res.message);
-      }
-    }
-    getPermissionList();
-  }, []);
 
   const handleSort = (sort: string) => {
     setSort(sort);
@@ -136,7 +115,7 @@ const RolePage = () => {
   return (
     <>
       <Flex justify='space-between' mb={4} direction={{base: 'column', md: 'row'}} gap={4}>
-        <Input placeholder='Search role' maxW={{base: 'full', md: '300'}}
+        <Input placeholder='Search author' maxW={{base: 'full', md: '300'}}
                onChange={(e) => debounced(e.target.value)}
         />
         <Button colorScheme='teal' maxW={'max-content'} ml={'auto'} variant={'solid'} rightIcon={<AddIcon/>}
@@ -149,7 +128,7 @@ const RolePage = () => {
           <Thead>
             <Tr>
               <Th fontSize='sm'>#</Th>
-              {columns.map((item) => {
+              {columns.map(item => {
                 return <Th key={item.value}>
                   <Button
                     p={0}
@@ -179,12 +158,13 @@ const RolePage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {data.map((item: RoleType, index) => {
+            {data.map((item: AuthorType, index) => {
               return (
                 <Tr key={item.id}>
                   <Td><Skeleton isLoaded={!loading}>{index + 1 + (page - 1) * size}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.name}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}><p style={{textWrap: 'wrap'}}>{item.description}</p></Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.nationality}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.penName}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.createdAt}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.updatedAt}</Skeleton></Td>
                   <Td>
@@ -242,14 +222,13 @@ const RolePage = () => {
         />
       </Flex>
 
-      <CreateRole isOpen={create.isOpen} onClose={create.onClose} getRoleList={getRoleList}
-                  permissionList={permissionList}/>
-      <UpdateRole isOpen={update.isOpen} onClose={update.onClose} dataSelected={dataSelected} getRoleList={getRoleList}
-                  permissionList={permissionList}/>
-      <DeleteRole isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected} getRoleList={getRoleList}
-                  setPage={setPage}/>
+      <CreateAuthor isOpen={create.isOpen} onClose={create.onClose} getAuthorList={getAuthorList}/>
+      <UpdateAuthor isOpen={update.isOpen} onClose={update.onClose} getAuthorList={getAuthorList}
+                    dataSelected={dataSelected}/>
+      <DeleteAuthor isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected}
+                    getAuthorList={getAuthorList} setPage={setPage}/>
     </>
   )
 }
 
-export default RolePage
+export default AuthorPage

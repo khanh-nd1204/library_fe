@@ -22,7 +22,18 @@ import {
   Image,
   Avatar,
 } from '@chakra-ui/react'
-import {FiHome, FiMenu, FiChevronDown, FiUsers, FiGrid, FiPocket,} from 'react-icons/fi'
+import {
+  FiHome,
+  FiMenu,
+  FiChevronDown,
+  FiUsers,
+  FiGrid,
+  FiPocket,
+  FiCommand,
+  FiLink,
+  FiPrinter,
+  FiBook, FiShoppingBag,
+} from 'react-icons/fi'
 import {IconType} from 'react-icons'
 import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -59,7 +70,12 @@ const LinkItems: Array<LinkItemProps> = [
   {name: 'Dashboard', icon: FiHome, href: '/admin'},
   {name: 'User', icon: FiUsers, href: '/admin/user'},
   {name: 'Permission', icon: FiGrid, href: '/admin/permission'},
-  {name: 'Role', icon: FiPocket, href: '/admin/role'}
+  {name: 'Role', icon: FiPocket, href: '/admin/role'},
+  {name: 'Category', icon: FiCommand, href: '/admin/category'},
+  {name: 'Author', icon: FiLink, href: '/admin/author'},
+  {name: 'Publisher', icon: FiPrinter, href: '/admin/publisher'},
+  {name: 'Book', icon: FiBook, href: '/admin/book'},
+  {name: 'Borrow', icon: FiShoppingBag, href: '/admin/borrow'}
 ]
 
 const SidebarContent = ({onClose, ...rest}: SidebarProps) => {

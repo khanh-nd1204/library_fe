@@ -17,7 +17,7 @@ const DeleteUser = (props: Props) => {
   const {dataSelected, onClose, isOpen, getUserList, setPage} = props;
   const toast = useToast();
 
-  const deleteUser = async () => {
+  const handleDelete = async () => {
     const res: ResponseType = await deleteUserAPI(dataSelected.id);
     if (res && !res.error) {
       toast({
@@ -47,7 +47,7 @@ const DeleteUser = (props: Props) => {
         </ModalBody>
         <ModalFooter>
           <Button variant='outline' onClick={onClose} mr={3}>Cancel</Button>
-          <Button colorScheme='red' mr={3} onClick={deleteUser}>Delete</Button>
+          <Button colorScheme='red' mr={3} onClick={handleDelete}>Delete</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

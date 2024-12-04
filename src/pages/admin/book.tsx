@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {
+  Badge,
   Button,
   Flex,
   HStack,
@@ -22,14 +23,10 @@ import {ResponseType} from "../../types/response.type.ts";
 import {AddIcon, ChevronDownIcon, ChevronUpIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons";
 import {useDebouncedCallback} from 'use-debounce';
 import {Pagination} from 'chakra-pagination/src/components';
-import {getRolesAPI} from "../../services/role.service.ts";
-import {RoleType} from "../../types/role.type.ts";
-import DeleteRole from "../../components/role/delete.tsx";
-import CreateRole from "../../components/role/create.tsx";
-import {getPermissionsAPI} from "../../services/permission.service.ts";
-import UpdateRole from "../../components/role/update.tsx";
+import {BookType} from "../../types/book.type.ts";
+import {getBooksAPI} from "../../services/book.service.ts";
 
-const RolePage = () => {
+const BookPage = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
@@ -44,34 +41,41 @@ const RolePage = () => {
       value: 'name'
     },
     {
-      name: 'description',
-      value: 'description'
+      name: 'authors',
+      value: 'authors.name'
     },
     {
-      name: 'created at',
-      value: 'createdAt'
+      name: 'categories',
+      value: 'categories.name'
     },
     {
-      name: 'updated at',
-      value: 'updatedAt'
-    }
+      name: 'publisher',
+      value: 'publisher.name'
+    },
+    {
+      name: 'publish year',
+      value: 'publishYear'
+    },
+    {
+      name: 'quantity',
+      value: 'quantity'
+    },
   ];
   const [filter, setFilter] = useState('');
-  const [dataSelected, setDataSelected] = useState<RoleType>({});
+  const [dataSelected, setDataSelected] = useState<BookType>({});
   const update = useDisclosure();
   const create = useDisclosure();
   const remove = useDisclosure();
-  const [permissionList, setPermissionList] = useState([]);
 
   useEffect(() => {
-    getRoleList();
+    getBookList();
   }, [sort, sortDirection, filter, page, size]);
 
-  const getRoleList = async () => {
+  const getBookList = async () => {
     const filterStr = 'filter=' + columns.map((item) => `${item.value}~'${filter}'`).join(' or ');
     const query = `page=${page}&size=${size}&sort=${sort},${sortDirection}&${filterStr}`;
     setLoading(true);
-    const res: ResponseType = await getRolesAPI(query);
+    const res: ResponseType = await getBooksAPI(query);
     setLoading(false);
     if (res && res.data) {
       setData(res.data.data);
@@ -87,29 +91,6 @@ const RolePage = () => {
       })
     }
   }
-
-  useEffect(() => {
-    const getPermissionList = async () => {
-      const query = `page=${1}&size=${100}`;
-      const res: ResponseType = await getPermissionsAPI(query);
-      if (res && res.data) {
-        const groupedByModule = res.data.data.reduce((result, api) => {
-          const {module, ...apiDetails} = api;
-          if (!result[module]) {
-            result[module] = {module, api: []};
-          }
-          result[module].api.push(apiDetails);
-          return result;
-        }, {});
-        const resultList = Object.values(groupedByModule);
-        setPermissionList(resultList);
-      } else {
-        setPermissionList([]);
-        console.error(res.message);
-      }
-    }
-    getPermissionList();
-  }, []);
 
   const handleSort = (sort: string) => {
     setSort(sort);
@@ -136,7 +117,7 @@ const RolePage = () => {
   return (
     <>
       <Flex justify='space-between' mb={4} direction={{base: 'column', md: 'row'}} gap={4}>
-        <Input placeholder='Search role' maxW={{base: 'full', md: '300'}}
+        <Input placeholder='Search book' maxW={{base: 'full', md: '300'}}
                onChange={(e) => debounced(e.target.value)}
         />
         <Button colorScheme='teal' maxW={'max-content'} ml={'auto'} variant={'solid'} rightIcon={<AddIcon/>}
@@ -149,7 +130,7 @@ const RolePage = () => {
           <Thead>
             <Tr>
               <Th fontSize='sm'>#</Th>
-              {columns.map((item) => {
+              {columns.map(item => {
                 return <Th key={item.value}>
                   <Button
                     p={0}
@@ -173,47 +154,68 @@ const RolePage = () => {
                   _hover={{bg: 'none', cursor: 'default'}}
                   variant="ghost"
                 >
+                  STATUS
+                </Button>
+              </Th>
+              <Th>
+                <Button
+                  p={0}
+                  fontSize='sm'
+                  fontWeight={500}
+                  _hover={{bg: 'none', cursor: 'default'}}
+                  variant="ghost"
+                >
                   ACTIONS
                 </Button>
               </Th>
             </Tr>
           </Thead>
           <Tbody>
-            {data.map((item: RoleType, index) => {
+            {data.map((item: BookType, index) => {
               return (
                 <Tr key={item.id}>
                   <Td><Skeleton isLoaded={!loading}>{index + 1 + (page - 1) * size}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.name}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}><p style={{textWrap: 'wrap'}}>{item.description}</p></Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.createdAt}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.updatedAt}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.authors}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.categories}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.publisher}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.publishYear}</Skeleton></Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.quantity}</Skeleton></Td>
                   <Td>
-                    <HStack>
-                      <Skeleton isLoaded={!loading}>
-                        <Tooltip label='Edit'>
-                          <IconButton
-                            aria-label='Edit'
-                            icon={<EditIcon/>}
-                            onClick={() => {
-                              update.onOpen();
-                              setDataSelected(item);
-                            }}
-                          />
-                        </Tooltip>
-                      </Skeleton>
-                      <Skeleton isLoaded={!loading}>
-                        <Tooltip label='Delete'>
-                          <IconButton
-                            aria-label='Delete'
-                            icon={<DeleteIcon/>}
-                            onClick={() => {
-                              remove.onOpen();
-                              setDataSelected(item);
-                            }}
-                          />
-                        </Tooltip>
-                      </Skeleton>
-                    </HStack>
+                    <Skeleton isLoaded={!loading}>
+                      {item.active ? <Badge colorScheme='green'>Active</Badge> :
+                        <Badge colorScheme='red'>Inactive</Badge>}
+                    </Skeleton>
+                  </Td>
+                  <Td>
+                    {item.active &&
+                        <HStack>
+                            <Skeleton isLoaded={!loading}>
+                                <Tooltip label='Edit'>
+                                    <IconButton
+                                        aria-label='Edit'
+                                        icon={<EditIcon/>}
+                                        onClick={() => {
+                                          update.onOpen();
+                                          setDataSelected(item);
+                                        }}
+                                    />
+                                </Tooltip>
+                            </Skeleton>
+                            <Skeleton isLoaded={!loading}>
+                                <Tooltip label='Delete'>
+                                    <IconButton
+                                        aria-label='Delete'
+                                        icon={<DeleteIcon/>}
+                                        onClick={() => {
+                                          remove.onOpen();
+                                          setDataSelected(item);
+                                        }}
+                                    />
+                                </Tooltip>
+                            </Skeleton>
+                        </HStack>
+                    }
                   </Td>
                 </Tr>
               );
@@ -242,14 +244,8 @@ const RolePage = () => {
         />
       </Flex>
 
-      <CreateRole isOpen={create.isOpen} onClose={create.onClose} getRoleList={getRoleList}
-                  permissionList={permissionList}/>
-      <UpdateRole isOpen={update.isOpen} onClose={update.onClose} dataSelected={dataSelected} getRoleList={getRoleList}
-                  permissionList={permissionList}/>
-      <DeleteRole isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected} getRoleList={getRoleList}
-                  setPage={setPage}/>
     </>
   )
 }
 
-export default RolePage
+export default BookPage

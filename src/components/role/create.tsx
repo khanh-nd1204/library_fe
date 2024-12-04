@@ -3,6 +3,7 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
+  Badge,
   Box,
   Button,
   Checkbox,
@@ -25,12 +26,13 @@ import * as Yup from "yup";
 import {Field, Form, Formik, FormikHelpers} from "formik";
 import {ResponseType} from "../../types/response.type.ts";
 import {createRoleAPI} from "../../services/role.service.ts";
+import {PermissionType} from "../../types/permission.type.ts";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   getRoleList: () => void;
-  permissionList: [];
+  permissionList: [{module: string, api: PermissionType[]}];
 }
 
 interface FormValues {
@@ -104,7 +106,7 @@ const CreateRole = (props: Props) => {
                       </FormControl>
 
                       <FormControl isInvalid={!!errors.permissions && touched.permissions}>
-                        <FormLabel htmlFor="permissions">Permissions</FormLabel>
+                        <FormLabel htmlFor="permissions">Permissions <span style={{color: 'red'}}>*</span></FormLabel>
                         <Field name="permissions">
                           {({field, form}) => (
                             <Accordion allowToggle>
@@ -150,7 +152,12 @@ const CreateRole = (props: Props) => {
                                     <AccordionPanel pb={4}>
                                       {module.api.map((api) => (
                                         <HStack key={api.id} justify="space-between" py={2}>
-                                          <Box>{api.name}</Box>
+                                          <Box>{api.name}
+                                            {api.method === 'GET' && <Badge ml='1' colorScheme='green'>{api.method}</Badge>}
+                                            {api.method === 'POST' && <Badge ml='1' colorScheme='yellow'>{api.method}</Badge>}
+                                            {api.method === 'PATCH' && <Badge ml='1' colorScheme='purple'>{api.method}</Badge>}
+                                            {api.method === 'DELETE' && <Badge ml='1' colorScheme='red'>{api.method}</Badge>}
+                                          </Box>
                                           <Checkbox
                                             colorScheme="teal"
                                             isChecked={field.value.includes(api.id)}

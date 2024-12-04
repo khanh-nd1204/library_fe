@@ -2,23 +2,23 @@ import {
   Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast
 } from "@chakra-ui/react";
 import {ResponseType} from "../../types/response.type.ts";
-import {deleteRoleAPI} from "../../services/role.service.ts";
-import {RoleType} from "../../types/role.type.ts";
+import {AuthorType} from "../../types/author.type.ts";
+import {deleteAuthorAPI} from "../../services/author.service.ts";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  dataSelected: RoleType;
-  getRoleList: () => void;
+  dataSelected: AuthorType;
+  getAuthorList: () => void;
   setPage: (page: number) => void;
 }
 
-const DeleteRole = (props: Props) => {
-  const {dataSelected, onClose, isOpen, getRoleList, setPage} = props;
+const DeleteAuthor = (props: Props) => {
+  const {dataSelected, onClose, isOpen, getAuthorList, setPage} = props;
   const toast = useToast();
 
   const handleDelete = async () => {
-    const res: ResponseType = await deleteRoleAPI(dataSelected.id);
+    const res: ResponseType = await deleteAuthorAPI(dataSelected.id);
     if (res && !res.error) {
       toast({
         description: res.message,
@@ -26,7 +26,7 @@ const DeleteRole = (props: Props) => {
       })
       onClose();
       setPage(1);
-      getRoleList();
+      getAuthorList();
     } else {
       toast({
         title: res.error,
@@ -43,7 +43,7 @@ const DeleteRole = (props: Props) => {
         <ModalHeader>Confirmation</ModalHeader>
         <ModalCloseButton/>
         <ModalBody>
-          Are you sure you want to delete role <span
+          Are you sure you want to delete author <span
           style={{color: 'teal', fontWeight: 500}}>{dataSelected.name}</span>?
         </ModalBody>
         <ModalFooter>
@@ -55,4 +55,4 @@ const DeleteRole = (props: Props) => {
   )
 }
 
-export default DeleteRole
+export default DeleteAuthor

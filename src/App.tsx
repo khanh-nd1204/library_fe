@@ -16,6 +16,11 @@ import ClientLayout from "./components/layout/client.tsx";
 import {UserType} from "./types/user.type.ts";
 import PermissionPage from "./pages/admin/permission.tsx";
 import RolePage from "./pages/admin/role.tsx";
+import CategoryPage from "./pages/admin/category.tsx";
+import AuthorPage from "./pages/admin/author.tsx";
+import PublisherPage from "./pages/admin/publisher.tsx";
+import BookPage from "./pages/admin/book.tsx";
+import BorrowPage from "./pages/admin/borrow.tsx";
 
 
 function App() {
@@ -56,6 +61,11 @@ function App() {
         {path: "user", element: <UserPage/>},
         {path: "permission", element: <PermissionPage/>},
         {path: "role", element: <RolePage/>},
+        {path: "category", element: <CategoryPage/>},
+        {path: "author", element: <AuthorPage/>},
+        {path: "publisher", element: <PublisherPage/>},
+        {path: "book", element: <BookPage/>},
+        {path: "borrow", element: <BorrowPage/>},
       ],
     },
     {path: "/login", element: user.id ? <Navigate to="/" replace/> : <LoginPage/>},

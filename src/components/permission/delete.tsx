@@ -17,7 +17,7 @@ const DeletePermission = (props: Props) => {
   const {dataSelected, onClose, isOpen, getPermissionList, setPage} = props;
   const toast = useToast();
 
-  const deletePermission = async () => {
+  const handleDelete = async () => {
     const res: ResponseType = await deletePermissionAPI(dataSelected.id);
     if (res && !res.error) {
       toast({
@@ -48,7 +48,7 @@ const DeletePermission = (props: Props) => {
         </ModalBody>
         <ModalFooter>
           <Button variant='outline' onClick={onClose} mr={3}>Cancel</Button>
-          <Button colorScheme='red' mr={3} onClick={deletePermission}>Delete</Button>
+          <Button colorScheme='red' mr={3} onClick={handleDelete}>Delete</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

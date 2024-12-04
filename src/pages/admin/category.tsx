@@ -17,19 +17,18 @@ import {
   Tr,
   useDisclosure,
   useToast
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
+import {CategoryType} from "../../types/category.type.ts";
 import {ResponseType} from "../../types/response.type.ts";
+import {useDebouncedCallback} from "use-debounce";
 import {AddIcon, ChevronDownIcon, ChevronUpIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons";
-import {useDebouncedCallback} from 'use-debounce';
-import {Pagination} from 'chakra-pagination/src/components';
-import {getRolesAPI} from "../../services/role.service.ts";
-import {RoleType} from "../../types/role.type.ts";
-import DeleteRole from "../../components/role/delete.tsx";
-import CreateRole from "../../components/role/create.tsx";
-import {getPermissionsAPI} from "../../services/permission.service.ts";
-import UpdateRole from "../../components/role/update.tsx";
+import {Pagination} from "chakra-pagination/src/components";
+import {getCategoriesAPI} from "../../services/category.service.ts";
+import CreateCategory from "../../components/category/create.tsx";
+import UpdateCategory from "../../components/category/update.tsx";
+import DeleteCategory from "../../components/category/delete.tsx";
 
-const RolePage = () => {
+const CategoryPage = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
@@ -57,21 +56,20 @@ const RolePage = () => {
     }
   ];
   const [filter, setFilter] = useState('');
-  const [dataSelected, setDataSelected] = useState<RoleType>({});
+  const [dataSelected, setDataSelected] = useState<CategoryType>({});
   const update = useDisclosure();
   const create = useDisclosure();
   const remove = useDisclosure();
-  const [permissionList, setPermissionList] = useState([]);
 
   useEffect(() => {
-    getRoleList();
+    getCategoryList();
   }, [sort, sortDirection, filter, page, size]);
 
-  const getRoleList = async () => {
+  const getCategoryList = async () => {
     const filterStr = 'filter=' + columns.map((item) => `${item.value}~'${filter}'`).join(' or ');
     const query = `page=${page}&size=${size}&sort=${sort},${sortDirection}&${filterStr}`;
     setLoading(true);
-    const res: ResponseType = await getRolesAPI(query);
+    const res: ResponseType = await getCategoriesAPI(query);
     setLoading(false);
     if (res && res.data) {
       setData(res.data.data);
@@ -87,29 +85,6 @@ const RolePage = () => {
       })
     }
   }
-
-  useEffect(() => {
-    const getPermissionList = async () => {
-      const query = `page=${1}&size=${100}`;
-      const res: ResponseType = await getPermissionsAPI(query);
-      if (res && res.data) {
-        const groupedByModule = res.data.data.reduce((result, api) => {
-          const {module, ...apiDetails} = api;
-          if (!result[module]) {
-            result[module] = {module, api: []};
-          }
-          result[module].api.push(apiDetails);
-          return result;
-        }, {});
-        const resultList = Object.values(groupedByModule);
-        setPermissionList(resultList);
-      } else {
-        setPermissionList([]);
-        console.error(res.message);
-      }
-    }
-    getPermissionList();
-  }, []);
 
   const handleSort = (sort: string) => {
     setSort(sort);
@@ -136,7 +111,7 @@ const RolePage = () => {
   return (
     <>
       <Flex justify='space-between' mb={4} direction={{base: 'column', md: 'row'}} gap={4}>
-        <Input placeholder='Search role' maxW={{base: 'full', md: '300'}}
+        <Input placeholder='Search category' maxW={{base: 'full', md: '300'}}
                onChange={(e) => debounced(e.target.value)}
         />
         <Button colorScheme='teal' maxW={'max-content'} ml={'auto'} variant={'solid'} rightIcon={<AddIcon/>}
@@ -149,7 +124,7 @@ const RolePage = () => {
           <Thead>
             <Tr>
               <Th fontSize='sm'>#</Th>
-              {columns.map((item) => {
+              {columns.map(item => {
                 return <Th key={item.value}>
                   <Button
                     p={0}
@@ -179,7 +154,7 @@ const RolePage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {data.map((item: RoleType, index) => {
+            {data.map((item: CategoryType, index) => {
               return (
                 <Tr key={item.id}>
                   <Td><Skeleton isLoaded={!loading}>{index + 1 + (page - 1) * size}</Skeleton></Td>
@@ -242,14 +217,13 @@ const RolePage = () => {
         />
       </Flex>
 
-      <CreateRole isOpen={create.isOpen} onClose={create.onClose} getRoleList={getRoleList}
-                  permissionList={permissionList}/>
-      <UpdateRole isOpen={update.isOpen} onClose={update.onClose} dataSelected={dataSelected} getRoleList={getRoleList}
-                  permissionList={permissionList}/>
-      <DeleteRole isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected} getRoleList={getRoleList}
-                  setPage={setPage}/>
+      <CreateCategory isOpen={create.isOpen} onClose={create.onClose} getCategoryList={getCategoryList}/>
+      <UpdateCategory isOpen={update.isOpen} onClose={update.onClose} getCategoryList={getCategoryList}
+                      dataSelected={dataSelected}/>
+      <DeleteCategory isOpen={remove.isOpen} onClose={remove.onClose} dataSelected={dataSelected}
+                      getCategoryList={getCategoryList} setPage={setPage}/>
     </>
   )
 }
 
-export default RolePage
+export default CategoryPage
