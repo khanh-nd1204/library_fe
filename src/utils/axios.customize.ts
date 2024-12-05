@@ -26,7 +26,12 @@ instance.interceptors.response.use(response => {
 }, async error => {
   NProgress.done();
   const {config, response} = error;
-  if (response?.status === 401 && !config.headers['x-no-retry'] && !["/login", "/register"].includes(window.location.pathname)) {
+  if (response?.status === 401
+    && !config.headers['x-no-retry']
+    && !["/login", "/register"].includes(window.location.pathname)
+    && config.url !== '/api/v1/auth/refresh')
+  {
+    window.localStorage.removeItem('accessToken');
     const res: ResponseType = await refreshTokenAPI();
     if (res && res.data) {
       window.localStorage.setItem('accessToken', res.data.accessToken);
@@ -34,7 +39,6 @@ instance.interceptors.response.use(response => {
       config.headers['x-no-retry'] = 'true';
       return instance.request(config);
     } else {
-      console.error(res.message);
       window.location.href = '/login';
     }
   }

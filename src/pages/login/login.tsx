@@ -63,7 +63,7 @@ const LoginPage = () => {
         description: Array.isArray(res.message) ? res.message[0] : res.message,
         status: 'error',
       })
-      if (res.statusCode === 401) reactivateAccount();
+      if (res.statusCode === 404) reactivateAccount();
     }
   }
 

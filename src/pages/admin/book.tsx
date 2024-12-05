@@ -25,6 +25,13 @@ import {useDebouncedCallback} from 'use-debounce';
 import {Pagination} from 'chakra-pagination/src/components';
 import {BookType} from "../../types/book.type.ts";
 import {getBooksAPI} from "../../services/book.service.ts";
+import CreateBook from "../../components/book/create.tsx";
+import {getPublishersAPI} from "../../services/publisher.service.ts";
+import {getAuthorsAPI} from "../../services/author.service.ts";
+import {getCategoriesAPI} from "../../services/category.service.ts";
+import {PublisherType} from "../../types/publisher.type.ts";
+import {AuthorType} from "../../types/author.type.ts";
+import {CategoryType} from "../../types/category.type.ts";
 
 const BookPage = () => {
   const [data, setData] = useState([]);
@@ -66,6 +73,9 @@ const BookPage = () => {
   const update = useDisclosure();
   const create = useDisclosure();
   const remove = useDisclosure();
+  const [authorList, setAuthorList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
+  const [publisherList, setPublisherList] = useState([]);
 
   useEffect(() => {
     getBookList();
@@ -89,6 +99,54 @@ const BookPage = () => {
         description: Array.isArray(res.message) ? res.message[0] : res.message,
         status: 'error',
       })
+    }
+  }
+
+  useEffect(() => {
+    getPublisherList();
+    getAuthorList();
+    getCategoryList();
+  }, []);
+
+  const getPublisherList = async () => {
+    const query = `page=${1}&size=${100}`;
+    const res: ResponseType = await getPublishersAPI(query);
+    if (res && res.data) {
+      setPublisherList(res.data.data.map((item: PublisherType) => ({
+        label: item.name,
+        value: item.id
+      })));
+    } else {
+      setPublisherList([]);
+      console.error(res.message);
+    }
+  }
+
+  const getAuthorList = async () => {
+    const query = `page=${1}&size=${100}`;
+    const res: ResponseType = await getAuthorsAPI(query);
+    if (res && res.data) {
+      setAuthorList(res.data.data.map((item: AuthorType) => ({
+        label: item.name,
+        value: item.id
+      })));
+    } else {
+      setAuthorList([]);
+      console.error(res.message);
+    }
+  }
+
+  const getCategoryList = async () => {
+    const query = `page=${1}&size=${100}`;
+    const res: ResponseType = await getCategoriesAPI(query);
+    if (res && res.data) {
+      setCategoryList(res.data.data.map((item: CategoryType) => ({
+        label: item.name,
+        value: item.id
+      })));
+    } else {
+      setCategoryList([]);
+      console.error(res.message);
     }
   }
 
@@ -244,6 +302,8 @@ const BookPage = () => {
         />
       </Flex>
 
+      <CreateBook isOpen={create.isOpen} onClose={create.onClose} getBookList={getBookList} authorList={authorList}
+                  categoryList={categoryList} publisherList={publisherList}/>
     </>
   )
 }

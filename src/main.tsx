@@ -19,6 +19,16 @@ const customTheme = extendTheme({
       defaultProps: {
         focusBorderColor: "teal.600",
       }
+    },
+    Textarea: {
+      defaultProps: {
+        focusBorderColor: "teal.600",
+      }
+    },
+    NumberInput: {
+      defaultProps: {
+        focusBorderColor: "teal.600",
+      }
     }
   },
 });

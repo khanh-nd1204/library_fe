@@ -34,7 +34,7 @@ interface FormValues {
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required!").max(100, 'Name must be less than 100 characters!'),
-  description: Yup.string().max(100, 'Name must be less than 100 characters!'),
+  description: Yup.string().max(100, 'Description must be less than 100 characters!'),
 })
 
 const CreateCategory = (props: Props) => {
