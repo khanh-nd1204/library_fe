@@ -7,7 +7,8 @@ export type BookType = {
   createdAt?: string;
   updatedAt?: string;
   active?: boolean;
-  authors?: string[],
-  categories?: string[],
-  publisher?: string
+  authors?: {id: number, name: string}[],
+  categories?: {id: number, name: string}[],
+  publisher?: {id: number, name: string},
+  images?: {id: number, imageUrl: string}[],
 }

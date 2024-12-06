@@ -10,6 +10,7 @@ import {
   Skeleton,
   Table,
   TableContainer,
+  Tag,
   Tbody,
   Td,
   Th,
@@ -32,6 +33,7 @@ import {getCategoriesAPI} from "../../services/category.service.ts";
 import {PublisherType} from "../../types/publisher.type.ts";
 import {AuthorType} from "../../types/author.type.ts";
 import {CategoryType} from "../../types/category.type.ts";
+import UpdateBook from "../../components/book/update.tsx";
 
 const BookPage = () => {
   const [data, setData] = useState([]);
@@ -234,9 +236,29 @@ const BookPage = () => {
                 <Tr key={item.id}>
                   <Td><Skeleton isLoaded={!loading}>{index + 1 + (page - 1) * size}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.name}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.authors}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.categories}</Skeleton></Td>
-                  <Td><Skeleton isLoaded={!loading}>{item.publisher}</Skeleton></Td>
+                  <Td>
+                    <Skeleton isLoaded={!loading}>
+                      <HStack wrap={"wrap"}>
+                        {item.authors?.map(item =>
+                          <Tag key={item?.id} variant='solid' colorScheme='teal'>
+                            {item?.name}
+                          </Tag>
+                        )}
+                      </HStack>
+                    </Skeleton>
+                  </Td>
+                  <Td>
+                    <Skeleton isLoaded={!loading}>
+                      <HStack wrap={"wrap"}>
+                        {item.categories?.map(item =>
+                          <Tag key={item?.id} variant='solid' colorScheme='teal'>
+                            {item?.name}
+                          </Tag>
+                        )}
+                      </HStack>
+                    </Skeleton>
+                  </Td>
+                  <Td><Skeleton isLoaded={!loading}>{item.publisher?.name}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.publishYear}</Skeleton></Td>
                   <Td><Skeleton isLoaded={!loading}>{item.quantity}</Skeleton></Td>
                   <Td>
@@ -304,8 +326,10 @@ const BookPage = () => {
 
       <CreateBook isOpen={create.isOpen} onClose={create.onClose} getBookList={getBookList} authorList={authorList}
                   categoryList={categoryList} publisherList={publisherList}/>
-    </>
-  )
-}
+      {/*<UpdateBook isOpen={update.isOpen} onClose={update.onClose} getBookList={getBookList} authorList={authorList}*/}
+      {/*            publisherList={publisherList} categoryList={categoryList} dataSelected={dataSelected}/>*/}
+      </>
+      )
+      }
 
-export default BookPage
+      export default BookPage

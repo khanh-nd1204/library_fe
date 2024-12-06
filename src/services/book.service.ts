@@ -1,12 +1,11 @@
 import axios from "../utils/axios.customize.ts";
-import {BookType} from "../types/book.type.ts";
 
-const createBookAPI = (data: BookType) => {
+const createBookAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/books";
   return axios.post(URL_BACKEND, data);
 }
 
-const updateBookAPI = (data: BookType) => {
+const updateBookAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/books";
   return axios.patch(URL_BACKEND, data);
 }

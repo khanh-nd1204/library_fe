@@ -1,12 +1,11 @@
 import axios from "../utils/axios.customize.ts";
-import {AuthorType} from "../types/author.type.ts";
 
-const createAuthorAPI = (data: AuthorType) => {
+const createAuthorAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/authors";
   return axios.post(URL_BACKEND, data);
 }
 
-const updateAuthorAPI = (data: AuthorType) => {
+const updateAuthorAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/authors";
   return axios.patch(URL_BACKEND, data);
 }

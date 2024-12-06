@@ -1,12 +1,11 @@
 import axios from "../utils/axios.customize.ts";
-import {CategoryType} from "../types/category.type.ts";
 
-const createCategoryAPI = (data: CategoryType) => {
+const createCategoryAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/categories";
   return axios.post(URL_BACKEND, data);
 }
 
-const updateCategoryAPI = (data: CategoryType) => {
+const updateCategoryAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/categories";
   return axios.patch(URL_BACKEND, data);
 }

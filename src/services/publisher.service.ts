@@ -1,12 +1,11 @@
 import axios from "../utils/axios.customize.ts";
-import {PublisherType} from "../types/publisher.type.ts";
 
-const createPublisherAPI = (data: PublisherType) => {
+const createPublisherAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/publishers";
   return axios.post(URL_BACKEND, data);
 }
 
-const updatePublisherAPI = (data: PublisherType) => {
+const updatePublisherAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/publishers";
   return axios.patch(URL_BACKEND, data);
 }

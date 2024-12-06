@@ -1,12 +1,11 @@
 import axios from "../utils/axios.customize.ts";
-import {RoleType} from "../types/role.type.ts";
 
-const createRoleAPI = (data: RoleType) => {
+const createRoleAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/roles";
   return axios.post(URL_BACKEND, data);
 }
 
-const updateRoleAPI = (data: RoleType) => {
+const updateRoleAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/roles";
   return axios.patch(URL_BACKEND, data);
 }

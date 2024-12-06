@@ -1,12 +1,11 @@
 import axios from "../utils/axios.customize.ts";
-import {UserType} from "../types/user.type.ts";
 
-const createUserAPI = (data: UserType) => {
+const createUserAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/users";
   return axios.post(URL_BACKEND, data);
 }
 
-const updateUserAPI = (data: UserType) => {
+const updateUserAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/users";
   return axios.patch(URL_BACKEND, data);
 }
@@ -26,7 +25,7 @@ const deleteUserAPI = (id: number) => {
   return axios.delete(URL_BACKEND);
 }
 
-const changeUserPasswordAPI = (data: UserType) => {
+const changeUserPasswordAPI = (data: object) => {
   const URL_BACKEND = "/api/v1/users/change-password";
   return axios.post(URL_BACKEND, data);
 }

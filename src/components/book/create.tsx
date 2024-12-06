@@ -23,10 +23,10 @@ import {
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import {Field, Form, Formik, FormikHelpers} from "formik";
-import {ResponseType} from "../../types/response.type.ts";
-import {createBookAPI} from "../../services/book.service.ts";
 import Autocomplete from "../common/autocomplete.tsx";
 import ImageUpload from "../common/upload.tsx";
+import {createBookAPI} from "../../services/book.service.ts";
+import {ResponseType} from "../../types/response.type.ts";
 
 interface Suggestion {
   label: string;
@@ -82,33 +82,28 @@ const CreateBook = (props: Props) => {
     authors: [],
     categories: [],
     images: [],
-    publisherId: 0
+    publisherId: null
   };
   const toast = useToast();
 
   const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
-    // const res: ResponseType = await createBookAPI(values);
-    // actions.setSubmitting(false);
-    // if (res && res.data) {
-    //   toast({
-    //     description: res.message,
-    //     status: 'success',
-    //   })
-    //   onClose();
-    //   await getBookList();
-    // } else {
-    //   toast({
-    //     title: res.error,
-    //     description: Array.isArray(res.message) ? res.message[0] : res.message,
-    //     status: 'error',
-    //   })
-    // }
-    console.log(values);
+    const res: ResponseType = await createBookAPI(values);
+    actions.setSubmitting(false);
+    if (res && res.data) {
+      toast({
+        description: res.message,
+        status: 'success',
+      })
+      onClose();
+      await getBookList();
+    } else {
+      toast({
+        title: res.error,
+        description: Array.isArray(res.message) ? res.message[0] : res.message,
+        status: 'error',
+      })
+    }
   }
-
-  const handleUploadComplete = (ids: string[]) => {
-    console.log("Uploaded IDs:", ids);
-  };
 
   return (
     <Drawer
@@ -182,7 +177,7 @@ const CreateBook = (props: Props) => {
                       <FormControl isInvalid={!!errors.authors && touched.authors}>
                         <FormLabel htmlFor="authors">Authors <span style={{color: 'red'}}>*</span></FormLabel>
                         <Field name="authors">
-                          {({ field, form }) => (
+                          {({field, form}) => (
                             <Autocomplete
                               suggestions={authorList}
                               isMultiSelect
@@ -246,7 +241,8 @@ const CreateBook = (props: Props) => {
                         <FormLabel htmlFor="images">Images <span style={{color: 'red'}}>*</span></FormLabel>
                         <Field name='images'>
                           {({field, form}) => (
-                            <ImageUpload onUploadComplete={handleUploadComplete} />
+                            <ImageUpload onUploadComplete={(ids: number[]) => form.setFieldValue(field.name, ids)}
+                                         folder={'book'}/>
                           )}
                         </Field>
                         <FormErrorMessage>{errors.images}</FormErrorMessage>
